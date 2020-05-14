@@ -1,0 +1,177 @@
+image: docker:19.03.8
+
+services:
+  - docker:19.03.8-dind
+
+.job_template: &job_definition
+  only:
+    - schedules
+  script:
+    - ./images/scripts/build.sh --push "${BUILD_GROUP}"
+
+stages:
+  - build_php
+  - build_elasticsearch
+  - build_mailhog
+  - build_mariadb
+  - build_nginx
+  - build_rabbitmq
+  - build_redis
+  - build_varnish
+
+before_script:
+  - docker info
+  - apk update && apk add bash
+
+##############################
+
+build_php_56:
+  <<: *job_definition
+  stage: build_php
+  variables:
+    BUILD_GROUP: php-fpm
+    PHP_VERSION: "5.6"
+
+build_php_71:
+  <<: *job_definition
+  stage: build_php
+  variables:
+    BUILD_GROUP: php-fpm
+    PHP_VERSION: "7.1"
+
+build_php_72:
+  <<: *job_definition
+  stage: build_php
+  variables:
+    BUILD_GROUP: php-fpm
+    PHP_VERSION: "7.2"
+
+build_php_73:
+  <<: *job_definition
+  stage: build_php
+  variables:
+    BUILD_GROUP: php-fpm
+    PHP_VERSION: "7.3"
+
+build_php_74:
+  <<: *job_definition
+  stage: build_php
+  variables:
+    BUILD_GROUP: php-fpm
+    PHP_VERSION: "7.4"
+
+##############################
+
+build_magento1_php_56:
+  <<: *job_definition
+  stage: build_php
+  variables:
+    BUILD_GROUP: php-fpm/magento1
+    PHP_VERSION: "5.6"
+
+build_magento1_php_71:
+  <<: *job_definition
+  stage: build_php
+  variables:
+    BUILD_GROUP: php-fpm/magento1
+    PHP_VERSION: "7.1"
+
+build_magento1_php_72:
+  <<: *job_definition
+  stage: build_php
+  variables:
+    BUILD_GROUP: php-fpm/magento1
+    PHP_VERSION: "7.2"
+
+build_magento1_php_73:
+  <<: *job_definition
+  stage: build_php
+  variables:
+    BUILD_GROUP: php-fpm/magento1
+    PHP_VERSION: "7.3"
+
+##############################
+
+build_magento2_php_71:
+  <<: *job_definition
+  stage: build_php
+  variables:
+    BUILD_GROUP: php-fpm/magento1
+    PHP_VERSION: "7.1"
+
+build_magento2_php_72:
+  <<: *job_definition
+  stage: build_php
+  variables:
+    BUILD_GROUP: php-fpm/magento2
+    PHP_VERSION: "7.2"
+
+build_magento2_php_73:
+  <<: *job_definition
+  stage: build_php
+  variables:
+    BUILD_GROUP: php-fpm/magento2
+    PHP_VERSION: "7.3"
+
+build_magento2_php_74:
+  <<: *job_definition
+  stage: build_php
+  variables:
+    BUILD_GROUP: php-fpm/magento2
+    PHP_VERSION: "7.4"
+
+##############################
+
+build_elasticsearch:
+  <<: *job_definition
+  stage: build_elasticsearch
+  variables:
+    BUILD_GROUP: elasticsearch
+
+##############################
+
+build_mailhog:
+  <<: *job_definition
+  stage: build_mailhog
+  variables:
+    BUILD_GROUP: mailhog
+
+##############################
+
+build_mariadb:
+  <<: *job_definition
+  stage: build_mariadb
+  variables:
+    BUILD_GROUP: mariadb
+
+##############################
+
+build_nginx:
+  <<: *job_definition
+  stage: build_nginx
+  variables:
+    BUILD_GROUP: nginx
+
+##############################
+
+build_rabbitmq:
+  <<: *job_definition
+  stage: build_rabbitmq
+  variables:
+    BUILD_GROUP: rabbitmq
+
+##############################
+
+build_redis:
+  <<: *job_definition
+  stage: build_redis
+  variables:
+    BUILD_GROUP: redis
+
+##############################
+
+build_varnish:
+  <<: *job_definition
+  stage: build_varnish
+  variables:
+    BUILD_GROUP: varnish

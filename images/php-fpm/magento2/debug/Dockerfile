@@ -1,13 +1,10 @@
 ARG PHP_VERSION
-FROM quay.io/warden/php-fpm:${PHP_VERSION}-magento2
+FROM den4ik/warden-php-fpm:${PHP_VERSION}-magento2
 USER root
 
 RUN set -eux \
     && PHP_VERSION=$(php -v | head -n1 | cut -d' ' -f2 | awk -F '.' '{print $1$2}') \
-    && if (( ${PHP_VERSION} >= 73 )); \
-        then yum install -y php${PHP_VERSION}-pecl-xdebug; \
-        else yum install -y php${PHP_VERSION}u-xdebug; \
-    fi \
+    && yum --enablerepo=remi-php${PHP_VERSION} install -y php-pecl-xdebug \
     && yum clean all \
     && rm -rf /var/cache/yum
 
