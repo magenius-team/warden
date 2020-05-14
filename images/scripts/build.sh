@@ -72,14 +72,14 @@ for file in $(find ${SEARCH_PATH} -type f -name Dockerfile | sort -V); do
       IMAGE_TAG+=":${IMAGE_SUFFIX}"
     fi
 
-    if [[ -d "$(echo ${BUILD_DIR})/context" ]]; then
-        BUILD_CONTEXT="$(echo ${BUILD_DIR})/context"
+    if [[ -d "$(echo ${BUILD_DIR} | cut -d/ -f1)/context" ]]; then
+      BUILD_CONTEXT="$(echo ${BUILD_DIR} | cut -d/ -f1)/context"
     else
-        if [[ -d "$(echo ${BUILD_DIR} | cut -d/ -f1)/context" ]]; then
-          BUILD_CONTEXT="$(echo ${BUILD_DIR} | cut -d/ -f1)/context"
-        else
-          BUILD_CONTEXT="${BUILD_DIR}"
-        fi
+      BUILD_CONTEXT="${BUILD_DIR}"
+    fi
+
+    if [[ ${SEARCH_PATH} == "nginx" ]] && [[ -d "$(echo ${BUILD_DIR})/context" ]]; then
+        BUILD_CONTEXT="$(echo ${BUILD_DIR})/context"
     fi
 
     printf "\e[01;31m==> building ${IMAGE_TAG} from ${BUILD_DIR}/Dockerfile with context ${BUILD_CONTEXT}\033[0m\n"
