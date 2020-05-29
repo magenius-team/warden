@@ -14,6 +14,7 @@ stages:
   - build_elasticsearch
   - build_mailhog
   - build_mariadb
+  - build_mysql
   - build_nginx
   - build_rabbitmq
   - build_redis
@@ -143,6 +144,14 @@ build_mariadb:
   stage: build_mariadb
   variables:
     BUILD_GROUP: mariadb
+
+##############################
+
+build_mysql:
+  <<: *job_definition
+  stage: build_mysql
+  variables:
+    BUILD_GROUP: mysql
 
 ##############################
 
