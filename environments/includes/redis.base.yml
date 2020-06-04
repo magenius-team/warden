@@ -2,4 +2,4 @@ version: "3.5"
 services:
   redis:
     hostname: "${WARDEN_ENV_NAME}-redis"
-    image: den4ik/warden-redis:${REDIS_VERSION:-5.0}
+    image: docker.io/magenius/redis:${REDIS_VERSION:-5.0}

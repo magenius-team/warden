@@ -9,7 +9,7 @@ services:
 
   varnish:
     hostname: "${WARDEN_ENV_NAME}-varnish"
-    image: den4ik/warden-varnish:${VARNISH_VERSION:-6.0}
+    image: docker.io/magenius/varnish:${VARNISH_VERSION:-6.0}
     depends_on:
       - nginx
     labels:

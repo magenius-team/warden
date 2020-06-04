@@ -1,5 +1,5 @@
 ARG PHP_VERSION=
-FROM den4ik/warden-php-fpm:${PHP_VERSION}
+FROM docker.io/magenius/php-fpm:${PHP_VERSION}
 USER root
 
 RUN set -eux \
