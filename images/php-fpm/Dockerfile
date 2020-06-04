@@ -1,5 +1,5 @@
 ARG PHP_VERSION=
-FROM den4ik/php:${PHP_VERSION}-fpm
+FROM docker.io/magenius/php:${PHP_VERSION}-fpm
 
 # Clear undesired settings from base fpm images
 ENV COMPOSER_ALLOW_SUPERUSER=
