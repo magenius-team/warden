@@ -1,17 +1,30 @@
 #!/usr/bin/env bash
-[[ ! ${WARDEN_COMMAND} ]] && >&2 echo -e "\033[31mThis script is not intended to be run directly!\033[0m" && exit 1
+[[ ! ${WARDEN_DIR} ]] && >&2 echo -e "\033[31mThis script is not intended to be run directly!\033[0m" && exit 1
 
 source "${WARDEN_DIR}/utils/env.sh"
 WARDEN_ENV_PATH="$(pwd -P)"
 
-# TODO: If the .env file already exists; prompt user instead of overwriting
+# Prompt user if there is an extant .env file to ensure they intend to overwrite
+if test -f "${WARDEN_ENV_PATH}/.env"; then
+  while true; do
+    read -p $'\033[32mA warden env file already exists at '"${WARDEN_ENV_PATH}/.env"$'; would you like to overwrite? y/n\033[0m ' resp
+    case $resp in
+      [Yy]*) echo "Overwriting extant .env file"; break;;
+      [Nn]*) exit;;
+      *) echo "Please answer (y)es or (n)o";;
+    esac
+  done
+fi
+
 # TODO: Prompt user for inputs when arguments remain unspecified
 
 WARDEN_ENV_NAME="${WARDEN_PARAMS[0]:-}"
 WARDEN_ENV_TYPE="${WARDEN_PARAMS[1]:-}"
 
 # Require the user inputs the required environment name parameter
-[[ ! ${WARDEN_ENV_NAME} ]] && >&2 echo -e "\033[31mMissing required argument. Please use --help to to print usage.\033[0m" && exit 1
+if [[ ! ${WARDEN_ENV_NAME} ]] || [[ ! ${WARDEN_ENV_TYPE} ]]; then
+  fatal "Missing required argument. Please use --help to to print usage."
+fi
 
 # Verify the auto-select and/or type path resolves correctly before setting it
 assertValidEnvType || exit $?
@@ -76,6 +89,7 @@ if [[ "${WARDEN_ENV_TYPE}" == "magento2" ]]; then
 		WARDEN_SPLIT_SALES=0
 		WARDEN_SPLIT_CHECKOUT=0
 		WARDEN_TEST_DB=0
+		WARDEN_MAGEPACK=0
 
 		BLACKFIRE_CLIENT_ID=
 		BLACKFIRE_CLIENT_TOKEN=
@@ -87,9 +101,9 @@ fi
 if [[ "${WARDEN_ENV_TYPE}" == "laravel" ]]; then
   cat >> "${WARDEN_ENV_PATH}/.env" <<-EOT
 
-		MARIADB_VERSION=10.3
+		MARIADB_VERSION=10.4
 		NODE_VERSION=10
-		PHP_VERSION=7.2
+		PHP_VERSION=7.4
 		REDIS_VERSION=5.0
 
 		WARDEN_DB=1
@@ -112,10 +126,10 @@ if [[ "${WARDEN_ENV_TYPE}" == "laravel" ]]; then
 
 		CACHE_DRIVER=redis
 		SESSION_DRIVER=redis
-		
+
 		REDIS_HOST=redis
 		REDIS_PORT=6379
-		
+
 		MAIL_DRIVER=sendmail
 	EOT
 fi
@@ -123,14 +137,14 @@ fi
 if [[ "${WARDEN_ENV_TYPE}" == "symfony" ]]; then
   cat >> "${WARDEN_ENV_PATH}/.env" <<-EOT
 
-		MARIADB_VERSION=10.3
+		MARIADB_VERSION=10.4
 		NODE_VERSION=10
 		PHP_VERSION=7.4
 		RABBITMQ_VERSION=3.8
 		REDIS_VERSION=5.0
 		VARNISH_VERSION=6.0
 
-		WARDEN_MARIADB=1
+		WARDEN_DB=1
 		WARDEN_REDIS=1
 		WARDEN_MAILHOG=1
 		WARDEN_RABBITMQ=1
