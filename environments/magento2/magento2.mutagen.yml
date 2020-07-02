@@ -24,6 +24,8 @@ sync:
         - "!/pub/static/.htaccess"
         - "/var/**"
         - "!/var/.htaccess"
+        - "/generated/**"
+        - "!/generated/.htaccess"
 
     permissions:
       defaultFileMode: "0644"
