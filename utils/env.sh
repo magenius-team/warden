@@ -34,6 +34,7 @@ function locateEnvPath () {
 function loadEnvConfig () {
     local WARDEN_ENV_PATH="${1}"
     eval "$(grep "^WARDEN_" "${WARDEN_ENV_PATH}/.env")"
+    eval "$(grep "^TRAEFIK_" "${WARDEN_ENV_PATH}/.env")"
 
     WARDEN_ENV_NAME="${WARDEN_ENV_NAME:-}"
     WARDEN_ENV_TYPE="${WARDEN_ENV_TYPE:-}"
@@ -58,6 +59,14 @@ function renderEnvNetworkName() {
     echo "${WARDEN_ENV_NAME}_default" | tr '[:upper:]' '[:lower:]'
 }
 
+function fetchValidEnvTypes () {
+    echo $(
+        ls -1 "${WARDEN_DIR}/environments/"*/*".base.yml" \
+            | sed -E "s#^${WARDEN_DIR}/environments/##" \
+            | cut -d/ -f1 | uniq | sort | grep -v includes
+    )
+}
+
 function assertValidEnvType () {
     if [[ ! -f "${WARDEN_DIR}/environments/${WARDEN_ENV_TYPE}/${WARDEN_ENV_TYPE}.base.yml" ]]; then
         >&2 echo -e "\033[31mInvalid environment type \"${WARDEN_ENV_TYPE}\" specified.\033[0m"
@@ -70,10 +79,10 @@ function appendEnvPartialIfExists () {
     local PARTIAL_PATH=""
 
     for PARTIAL_PATH in \
-        "${WARDEN_DIR}/environments/${WARDEN_ENV_TYPE}/${PARTIAL_NAME}.base.yml" \
-        "${WARDEN_DIR}/environments/${WARDEN_ENV_TYPE}/${PARTIAL_NAME}.${WARDEN_ENV_SUBT}.yml" \
         "${WARDEN_DIR}/environments/includes/${PARTIAL_NAME}.base.yml" \
-        "${WARDEN_DIR}/environments/includes/${PARTIAL_NAME}.${WARDEN_ENV_SUBT}.yml"
+        "${WARDEN_DIR}/environments/includes/${PARTIAL_NAME}.${WARDEN_ENV_SUBT}.yml" \
+        "${WARDEN_DIR}/environments/${WARDEN_ENV_TYPE}/${PARTIAL_NAME}.base.yml" \
+        "${WARDEN_DIR}/environments/${WARDEN_ENV_TYPE}/${PARTIAL_NAME}.${WARDEN_ENV_SUBT}.yml"
     do
         if [[ -f "${PARTIAL_PATH}" ]]; then
             DOCKER_COMPOSE_ARGS+=("-f" "${PARTIAL_PATH}")

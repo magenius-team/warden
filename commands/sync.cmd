@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 [[ ! ${WARDEN_DIR} ]] && >&2 echo -e "\033[31mThis script is not intended to be run directly!\033[0m" && exit 1
 
-source "${WARDEN_DIR}/utils/env.sh"
 WARDEN_ENV_PATH="$(locateEnvPath)" || exit $?
 loadEnvConfig "${WARDEN_ENV_PATH}" || exit $?
 
@@ -61,12 +60,8 @@ case "${WARDEN_PARAMS[0]}" in
     stop)
         mutagen sync terminate --label-selector "warden-sync=${WARDEN_ENV_NAME}"
         ;;
-    list)
-        [[ ${WARDEN_VERBOSE} ]] && MUTAGEN_ARGS=" -l " || MUTAGEN_ARGS=
-        mutagen sync list ${MUTAGEN_ARGS} --label-selector "warden-sync=${WARDEN_ENV_NAME}"
-        ;;
-    flush|monitor|pause|reset|resume)
-        mutagen sync "${WARDEN_PARAMS[0]}" --label-selector "warden-sync=${WARDEN_ENV_NAME}"
+    list|flush|monitor|pause|reset|resume)
+        mutagen sync "${WARDEN_PARAMS[@]}" "${@}" --label-selector "warden-sync=${WARDEN_ENV_NAME}"
         ;;
     *)
         fatal "The command \"${WARDEN_PARAMS[0]}\" does not exist. Please use --help for usage."
