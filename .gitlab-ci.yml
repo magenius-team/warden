@@ -19,6 +19,7 @@ stages:
   - build_rabbitmq
   - build_redis
   - build_varnish
+  - build_magepack
 
 before_script:
   - docker info
@@ -184,3 +185,11 @@ build_varnish:
   stage: build_varnish
   variables:
     BUILD_GROUP: varnish
+
+##############################
+
+build_magepack:
+  <<: *job_definition
+  stage: build_magepack
+  variables:
+    BUILD_GROUP: magepack
