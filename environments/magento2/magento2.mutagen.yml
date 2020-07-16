@@ -16,7 +16,8 @@ sync:
         - "*.sw[a-p]"
 
         # IDE files
-        - ".idea"
+        - ".idea/**"
+        - "!.idea/misc.xml"
 
         # Magento files
         - "/pub/media"
