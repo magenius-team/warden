@@ -9,8 +9,8 @@ if [[ ${WARDEN_DB:-1} -eq 0 ]]; then
   fatal "Database environment is not used (WARDEN_DB=0)."
 fi
 
-if (( ${#WARDEN_PARAMS[@]} == 0 )); then
-  fatal "This command has required params; use --help for details."
+if (( ${#WARDEN_PARAMS[@]} == 0 )) || [[ "${WARDEN_PARAMS[0]}" == "help" ]]; then
+  warden db --help || exit $? && exit $?
 fi
 
 ## load connection information for the mysql service
@@ -35,6 +35,7 @@ case "${WARDEN_PARAMS[0]}" in
         ;;
     import)
         LC_ALL=C sed -E 's/DEFINER[ ]*=[ ]*`[^`]+`@`[^`]+`/DEFINER=CURRENT_USER/g' \
+            | LC_ALL=C sed -E '/\@\@(GLOBAL\.GTID_PURGED|SESSION\.SQL_LOG_BIN)/d' \
             | "${WARDEN_DIR}/bin/warden" env exec -T db \
             mysql -u"${MYSQL_USER}" -p"${MYSQL_PASSWORD}" --database="${MYSQL_DATABASE}" "${WARDEN_PARAMS[@]:1}" "$@"
         ;;
