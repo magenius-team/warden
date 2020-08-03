@@ -32,7 +32,7 @@ The below example demonstrates the from-scratch setup of the Magento 2 applicati
 
        WARDEN_SYNC_IGNORE=
 
-       ELASTICSEARCH_VERSION=7.7
+       ELASTICSEARCH_VERSION=7.6
        MARIADB_VERSION=10.3
        NODE_VERSION=10
        PHP_VERSION=7.3
@@ -47,6 +47,7 @@ The below example demonstrates the from-scratch setup of the Magento 2 applicati
        WARDEN_SPLIT_SALES=0
        WARDEN_SPLIT_CHECKOUT=0
        WARDEN_TEST_DB=0
+       WARDEN_MAGEPACK=0
        
        BLACKFIRE_CLIENT_ID=
        BLACKFIRE_CLIENT_TOKEN=
@@ -83,92 +84,129 @@ The below example demonstrates the from-scratch setup of the Magento 2 applicati
         If you have previously configured global credentials, you may skip this step, as ``~/.composer/`` is mounted into the container from the host machine in order to share composer cache between projects, and also shares the global ``auth.json`` from the host machine.
     ```
 
-7. Initialize project source files using composer create-project and then move them into place:
+ 7. Initialize project source files using composer create-project and then move them into place:
 
-       composer create-project --repository-url=https://repo.magento.com/ \
-           magento/project-community-edition /tmp/exampleproject 2.3.x
+        META_PACKAGE=magento/project-community-edition META_VERSION=2.4.x
 
-       rsync -a /tmp/exampleproject/ /var/www/html/
-       rm -rf /tmp/exampleproject/
+        composer create-project --repository-url=https://repo.magento.com/ \
+            "${META_PACKAGE}" /tmp/exampleproject "${META_VERSION}"
 
-8. Install the application and you should be all set:
+        rsync -a /tmp/exampleproject/ /var/www/html/
+        rm -rf /tmp/exampleproject/
 
-       ## Install Application
-       bin/magento setup:install \
-           --backend-frontname=backend \
-           --amqp-host=rabbitmq \
-           --amqp-port=5672 \
-           --amqp-user=guest \
-           --amqp-password=guest \
-           --db-host=db \
-           --db-name=magento \
-           --db-user=magento \
-           --db-password=magento \
-           --http-cache-hosts=varnish:80 \
-           --session-save=redis \
-           --session-save-redis-host=redis \
-           --session-save-redis-port=6379 \
-           --session-save-redis-db=2 \
-           --session-save-redis-max-concurrency=20 \
-           --cache-backend=redis \
-           --cache-backend-redis-server=redis \
-           --cache-backend-redis-db=0 \
-           --cache-backend-redis-port=6379 \
-           --page-cache=redis \
-           --page-cache-redis-server=redis \
-           --page-cache-redis-db=1 \
-           --page-cache-redis-port=6379
+ 8. Install the application and you should be all set:
 
-       ## Configure Application
-       bin/magento config:set --lock-env web/unsecure/base_url \
-           "https://${TRAEFIK_SUBDOMAIN}.${TRAEFIK_DOMAIN}/"
+        ## Install Application
+        bin/magento setup:install \
+            --backend-frontname=backend \
+            --amqp-host=rabbitmq \
+            --amqp-port=5672 \
+            --amqp-user=guest \
+            --amqp-password=guest \
+            --db-host=db \
+            --db-name=magento \
+            --db-user=magento \
+            --db-password=magento \
+            --search-engine=elasticsearch7 \
+            --elasticsearch-host=elasticsearch \
+            --elasticsearch-port=9200 \
+            --elasticsearch-index-prefix=magento2 \
+            --elasticsearch-enable-auth=0 \
+            --elasticsearch-timeout=15 \
+            --http-cache-hosts=varnish:80 \
+            --session-save=redis \
+            --session-save-redis-host=redis \
+            --session-save-redis-port=6379 \
+            --session-save-redis-db=2 \
+            --session-save-redis-max-concurrency=20 \
+            --cache-backend=redis \
+            --cache-backend-redis-server=redis \
+            --cache-backend-redis-db=0 \
+            --cache-backend-redis-port=6379 \
+            --page-cache=redis \
+            --page-cache-redis-server=redis \
+            --page-cache-redis-db=1 \
+            --page-cache-redis-port=6379
 
-       bin/magento config:set --lock-env web/secure/base_url \
-           "https://${TRAEFIK_SUBDOMAIN}.${TRAEFIK_DOMAIN}/"
+        ## Configure Application
+        bin/magento config:set --lock-env web/unsecure/base_url \
+            "https://${TRAEFIK_SUBDOMAIN}.${TRAEFIK_DOMAIN}/"
 
-       bin/magento config:set --lock-env web/secure/offloader_header X-Forwarded-Proto
+        bin/magento config:set --lock-env web/secure/base_url \
+            "https://${TRAEFIK_SUBDOMAIN}.${TRAEFIK_DOMAIN}/"
 
-       bin/magento config:set --lock-env web/secure/use_in_frontend 1
-       bin/magento config:set --lock-env web/secure/use_in_adminhtml 1
-       bin/magento config:set --lock-env web/seo/use_rewrites 1
+        bin/magento config:set --lock-env web/secure/offloader_header X-Forwarded-Proto
 
-       bin/magento config:set --lock-env system/full_page_cache/caching_application 2
-       bin/magento config:set --lock-env system/full_page_cache/ttl 604800
+        bin/magento config:set --lock-env web/secure/use_in_frontend 1
+        bin/magento config:set --lock-env web/secure/use_in_adminhtml 1
+        bin/magento config:set --lock-env web/seo/use_rewrites 1
 
-       bin/magento config:set --lock-env catalog/search/engine elasticsearch7
-       bin/magento config:set --lock-env catalog/search/enable_eav_indexer 1
-       bin/magento config:set --lock-env catalog/search/elasticsearch7_server_hostname elasticsearch
-       bin/magento config:set --lock-env catalog/search/elasticsearch7_server_port 9200
-       bin/magento config:set --lock-env catalog/search/elasticsearch7_index_prefix magento2
-       bin/magento config:set --lock-env catalog/search/elasticsearch7_enable_auth 0
-       bin/magento config:set --lock-env catalog/search/elasticsearch7_server_timeout 15
+        bin/magento config:set --lock-env system/full_page_cache/caching_application 2
+        bin/magento config:set --lock-env system/full_page_cache/ttl 604800
 
-       bin/magento config:set --lock-env dev/static/sign 0
+        bin/magento config:set --lock-env catalog/search/enable_eav_indexer 1
 
-       bin/magento deploy:mode:set -s developer
-       bin/magento cache:disable block_html full_page
+        bin/magento config:set --lock-env dev/static/sign 0
 
-       bin/magento indexer:reindex
-       bin/magento cache:flush
+        bin/magento deploy:mode:set -s developer
+        bin/magento cache:disable block_html full_page
 
-       ## Generate an admin user
-       ADMIN_PASS="$(pwgen -n1 16)"
-       ADMIN_USER=localadmin
+        bin/magento indexer:reindex
+        bin/magento cache:flush
 
-       bin/magento admin:user:create \
-           --admin-password="${ADMIN_PASS}" \
-           --admin-user="${ADMIN_USER}" \
-           --admin-firstname="Local" \
-           --admin-lastname="Admin" \
-           --admin-email="${ADMIN_USER}@example.com"
-       printf "u: %s\np: %s\n" "${ADMIN_USER}" "${ADMIN_PASS}"
+    ``` note::
+        Prior to Magento ``2.4.x`` it was not required to enter search-engine and elasticsearch configuration during installation and these params to ``setup:install`` are not supported by Magento ``2.3.x``. These should be omitted on older versions where not supported and Elasticsearch configured via ``config:set`` instead:
 
-9. Launch the application in your browser:
+        .. code::
 
-    * [https://app.exampleproject.test/](https://app.exampleproject.test/)
-    * [https://app.exampleproject.test/backend/](https://app.exampleproject.test/backend/)
-    * [https://rabbitmq.exampleproject.test/](https://rabbitmq.exampleproject.test/)
-    * [https://elasticsearch.exampleproject.test/](https://elasticsearch.exampleproject.test/)
+            bin/magento config:set --lock-env catalog/search/engine elasticsearch7
+            bin/magento config:set --lock-env catalog/search/elasticsearch7_server_hostname elasticsearch
+            bin/magento config:set --lock-env catalog/search/elasticsearch7_server_port 9200
+            bin/magento config:set --lock-env catalog/search/elasticsearch7_index_prefix magento2
+            bin/magento config:set --lock-env catalog/search/elasticsearch7_enable_auth 0
+            bin/magento config:set --lock-env catalog/search/elasticsearch7_server_timeout 15
+    ```
+
+ 9. Generate an admin user and configure 2FA for OTP
+
+        ## Generate localadmin user
+        ADMIN_PASS="$(pwgen -n1 16)"
+        ADMIN_USER=localadmin
+
+        bin/magento admin:user:create \
+            --admin-password="${ADMIN_PASS}" \
+            --admin-user="${ADMIN_USER}" \
+            --admin-firstname="Local" \
+            --admin-lastname="Admin" \
+            --admin-email="${ADMIN_USER}@example.com"
+        printf "u: %s\np: %s\n" "${ADMIN_USER}" "${ADMIN_PASS}"
+
+        ## Configure 2FA provider
+        OTPAUTH_QRI=
+        TFA_SECRET=$(python -c "import base64; print base64.b32encode('$(pwgen -A1 128)')" | sed 's/=*$//')
+        OTPAUTH_URL=$(printf "otpauth://totp/%s%%3Alocaladmin%%40example.com?issuer=%s&secret=%s" \
+            "${TRAEFIK_SUBDOMAIN}.${TRAEFIK_DOMAIN}" "${TRAEFIK_SUBDOMAIN}.${TRAEFIK_DOMAIN}" "${TFA_SECRET}"
+        )
+
+        bin/magento config:set --lock-env twofactorauth/general/force_providers google
+        bin/magento security:tfa:google:set-secret "${ADMIN_USER}" "${TFA_SECRET}"
+
+        printf "%s\n\n" "${OTPAUTH_URL}"
+        printf "2FA Authenticator Codes:\n%s\n" "$(oathtool -s 30 -w 10 --totp --base32 "${TFA_SECRET}")"
+
+        segno "${OTPAUTH_URL}" -s 4 -o "pub/media/${ADMIN_USER}-totp-qr.png"
+        printf "%s\n\n" "https://${TRAEFIK_SUBDOMAIN}.${TRAEFIK_DOMAIN}/media/${ADMIN_USER}-totp-qr.png?t=$(date +%s)"
+
+    ``` note::
+        Use of 2FA is mandatory on Magento ``2.4.x`` and setup of 2FA should be skipped when installing ``2.3.x`` or earlier. Where 2FA is setup manually via UI upon login rather than using the CLI commands above, the 2FA configuration email may be retrieved from `the Mailhog service <https://mailhog.warden.test/>`_.
+    ```
+
+ 10. Launch the application in your browser:
+
+     * [https://app.exampleproject.test/](https://app.exampleproject.test/)
+     * [https://app.exampleproject.test/backend/](https://app.exampleproject.test/backend/)
+     * [https://rabbitmq.exampleproject.test/](https://rabbitmq.exampleproject.test/)
+     * [https://elasticsearch.exampleproject.test/](https://elasticsearch.exampleproject.test/)
 
 ``` note::
     To completely destroy the ``exampleproject`` environment we just created, run ``warden env down -v`` to tear down the project's Docker containers, volumes, etc.

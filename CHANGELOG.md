@@ -1,11 +1,44 @@
 # Change Log
 
 ## UNRELEASED [x.y.z](https://github.com/davidalger/warden/tree/x.y.z) (yyyy-mm-dd)
-[All Commits](https://github.com/davidalger/warden/compare/0.7.0..develop)
+[All Commits](https://github.com/davidalger/warden/compare/0.8.1..develop)
 
 **Enhancements:**
 
+* Changed all `:delegated` mounts to `:cached` mounts to preserve existing behavior of mounts when new behavior in Docker Desktop Edge 2.3.2.0 is promoted to stable channel ([#204](https://github.com/davidalger/warden/pull/204) by @davidalger)
+
+## Version [0.8.1](https://github.com/davidalger/warden/tree/0.8.1) (2020-07-30)
+[All Commits](https://github.com/davidalger/warden/compare/0.8.0..0.8.1)
+
+**Enhancements:**
+
+* Updated default version of PHP for new `magento2` environments to PHP 7.4
+* Updated default version of Elasticsearch for new `magento2` environments to Elasticsearch 7.6
+* Updated default version of Elasticsearch where unspecified in project's `.env` file to Elasticsearch 7.8
+* Dropped Elasticsearch image builds for versions prior to 6.8 and versions 7.0 through 7.5
+
+**Bug Fixes:**
+
+* Fixed issue where nginx would unexpectedly exit on Linux due to incorrect default value for `XDEBUG_CONNECT_BACK_HOST` in base nginx configuration (issue [#200](https://github.com/davidalger/warden/issues/200))
+
+## Version [0.8.0](https://github.com/davidalger/warden/tree/0.8.0) (2020-07-27)
+[All Commits](https://github.com/davidalger/warden/compare/0.7.0..0.8.0)
+
+**Upgrade Notes:**
+
+* To ensure Traefik 2.2 version update takes effect, run `warden svc up` after updating.
+* Pre-existing projects may need to be re-created to avoid warnings from docker-compose regarding unused named volumes.
+* The `BYPASS_VARNISH` flag (deprecated in 0.5.0) has been removed. Use toggle `WARDEN_VARNISH=0` to disable Varnish.
+* Recently updated `php-fpm` images now include the `crontabs` package with `crond` running in the background. Be sure you have the latest images by running `warden env pull` in the project directory followed by `warden env up` to use this functionality. To configure a crontab that is persistent, a crontab file may be mounted at `/var/spool/cron/www-data` (std crontab path) via custom configuration in the project's `.warden/warden-env.yml` file.
+
+**Enhancements:**
+
+* Added `warden vnc` command to launch VNC tunnel via SSH or (when installed) launch Remmina ([#116](https://github.com/davidalger/warden/pull/116) by @lbajsarowicz)
 * Updated `warden env`, `warden svc` and `warden db` to print help text when called without any parameters specified
+* Updated volume declarations for RabbitMQ and Redis services to use named volumes (avoid use of anonymous volumes)
+* Updated version of Traefik from 2.1 to 2.2
+* Updated `warden debug` to also pass `host.docker.internal` into the `php-debug` container for the `XDEBUG_REMOTE_HOST` value on WSL when Microsoft is present in `/proc/sys/kernel/osrelease` ([#196](https://github.com/davidalger/warden/pull/196) by @LeeSaferite)
+* Updated nginx configuration to pass `XDEBUG_CONNECT_BACK_HOST` as environment variable in base config allowing it to be overriden by exported env variable on all host OS envs ([#199](https://github.com/davidalger/warden/pull/199) by @LeeSaferite)
 
 ## Version [0.7.0](https://github.com/davidalger/warden/tree/0.7.0) (2020-07-22)
 [All Commits](https://github.com/davidalger/warden/compare/0.6.0..0.7.0)
@@ -107,7 +140,7 @@ If `PHP_VERSION` is not defined in a project's `.env` type the default version i
 
 There is a **breaking change** where custom environment config specific to Linux has been used in the form of placing a `.warden/warden-env.linux-gnu.yml` file in the project directory. The value used for `WARDEN_ENV_SUBT` on Linux is now `linux` rather than `linux-gnu`. After upgrading, these files will need to be re-named from `.warden/warden-env.linux-gnu.yml` to `.warden/warden-env.linux.yml`. Where continued compatibility with prior versions of Warden is desired (for example, to not require the entire team to upgrade Warden at once), a symlink may be placed to point the old file name to the new one allowing Warden to load the definition correctly on both new and old implementations: `warden-env.linux-gnu.yml -> warden-env.linux.yml`
 
-The `BYPASS_VARNISH` flag will continue to work as before but has been **deprecated** to be removed in a future release. It will no longer be included in the `.env` file created for new `magento2` environments.Please use the new feature toggle `WARDEN_VARNISH=0` to disable Varnish instead.
+The `BYPASS_VARNISH` flag will continue to work as before but has been **deprecated** to be removed in a future release. It will no longer be included in the `.env` file created for new `magento2` environments. Please use the new feature toggle `WARDEN_VARNISH=0` to disable Varnish instead.
 
 **Enhancements:**
 
