@@ -34,8 +34,8 @@ RUN mkdir -p /tmp/mhsendmail \
 RUN pip3 install awscli segno --no-cache-dir
 
 # Install modman
-RUN "bash < <(wget -q --no-check-certificate -O - https://raw.github.com/colinmollenhour/modman/master/modman-installer) \
-    && mv ~/bin/modman /usr/local/bin/"
+RUN wget -q --no-check-certificate -O /usr/local/bin/modman "https://raw.github.com/colinmollenhour/modman/master/modman" \
+    && chmod +x /usr/local/bin/modman
 
 # Configure www-data user as primary php-fpm user for better local dev experience
 RUN useradd www-data \
