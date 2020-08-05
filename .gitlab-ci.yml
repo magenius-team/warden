@@ -27,26 +27,26 @@ before_script:
 
 ##############################
 
-build_php_56:
-  <<: *job_definition
-  stage: build_php
-  variables:
-    BUILD_GROUP: php-fpm
-    PHP_VERSION: "5.6"
+#build_php_56:
+#  <<: *job_definition
+#  stage: build_php
+#  variables:
+#    BUILD_GROUP: php-fpm
+#    PHP_VERSION: "5.6"
 
-build_php_71:
-  <<: *job_definition
-  stage: build_php
-  variables:
-    BUILD_GROUP: php-fpm
-    PHP_VERSION: "7.1"
+#build_php_71:
+#  <<: *job_definition
+#  stage: build_php
+#  variables:
+#    BUILD_GROUP: php-fpm
+#    PHP_VERSION: "7.1"
 
-build_php_72:
-  <<: *job_definition
-  stage: build_php
-  variables:
-    BUILD_GROUP: php-fpm
-    PHP_VERSION: "7.2"
+#build_php_72:
+#  <<: *job_definition
+#  stage: build_php
+#  variables:
+#    BUILD_GROUP: php-fpm
+#    PHP_VERSION: "7.2"
 
 build_php_73:
   <<: *job_definition
@@ -64,26 +64,26 @@ build_php_74:
 
 ##############################
 
-build_magento1_php_56:
-  <<: *job_definition
-  stage: build_php
-  variables:
-    BUILD_GROUP: php-fpm/magento1
-    PHP_VERSION: "5.6"
+#build_magento1_php_56:
+#  <<: *job_definition
+#  stage: build_php
+#  variables:
+#    BUILD_GROUP: php-fpm/magento1
+#    PHP_VERSION: "5.6"
 
-build_magento1_php_71:
-  <<: *job_definition
-  stage: build_php
-  variables:
-    BUILD_GROUP: php-fpm/magento1
-    PHP_VERSION: "7.1"
+#build_magento1_php_71:
+#  <<: *job_definition
+#  stage: build_php
+#  variables:
+#    BUILD_GROUP: php-fpm/magento1
+#    PHP_VERSION: "7.1"
 
-build_magento1_php_72:
-  <<: *job_definition
-  stage: build_php
-  variables:
-    BUILD_GROUP: php-fpm/magento1
-    PHP_VERSION: "7.2"
+#build_magento1_php_72:
+#  <<: *job_definition
+#  stage: build_php
+#  variables:
+#    BUILD_GROUP: php-fpm/magento1
+#    PHP_VERSION: "7.2"
 
 build_magento1_php_73:
   <<: *job_definition
@@ -94,19 +94,19 @@ build_magento1_php_73:
 
 ##############################
 
-build_magento2_php_71:
-  <<: *job_definition
-  stage: build_php
-  variables:
-    BUILD_GROUP: php-fpm/magento1
-    PHP_VERSION: "7.1"
+#build_magento2_php_71:
+#  <<: *job_definition
+#  stage: build_php
+#  variables:
+#    BUILD_GROUP: php-fpm/magento2
+#    PHP_VERSION: "7.1"
 
-build_magento2_php_72:
-  <<: *job_definition
-  stage: build_php
-  variables:
-    BUILD_GROUP: php-fpm/magento2
-    PHP_VERSION: "7.2"
+#build_magento2_php_72:
+#  <<: *job_definition
+#  stage: build_php
+#  variables:
+#    BUILD_GROUP: php-fpm/magento2
+#    PHP_VERSION: "7.2"
 
 build_magento2_php_73:
   <<: *job_definition
