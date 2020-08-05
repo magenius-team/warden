@@ -33,6 +33,10 @@ RUN mkdir -p /tmp/mhsendmail \
 # Install awscli to support data backfill workflows using S3 storage; segno for QR code generation
 RUN pip3 install awscli segno --no-cache-dir
 
+# Install modman
+RUN bash < <(wget -q --no-check-certificate -O - https://raw.github.com/colinmollenhour/modman/master/modman-installer) \
+    && mv ~/bin/modman /usr/local/bin/
+
 # Configure www-data user as primary php-fpm user for better local dev experience
 RUN useradd www-data \
     && chmod 0755 ~www-data \
