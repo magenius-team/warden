@@ -4,7 +4,7 @@ USER root
 
 RUN set -eux \
     && PHP_VERSION=$(php -v | head -n1 | cut -d' ' -f2 | awk -F '.' '{print $1$2}') \
-    && yum --enablerepo=remi-php${PHP_VERSION} install -y php-pecl-xdebug3 \
+    && yum --enablerepo=remi-php${PHP_VERSION} install -y php-pecl-xdebug \
     && yum clean all \
     && rm -rf /var/cache/yum
 
