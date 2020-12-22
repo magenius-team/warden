@@ -8,8 +8,9 @@ ENV COMPOSER_HOME=
 ENV MAILHOG_HOST    mailhog
 ENV MAILHOG_PORT    1025
 
-RUN yum install -y which pv sudo bind-utils python3-pip mariadb102 bash-completion rsync socat oathtool \
+RUN yum install -y which pv sudo bind-utils python3-pip bash-completion rsync socat oathtool \
         wget ack make gcc gcc-c++ automake autoconf crontabs \
+    && yum install -y --enablerepo=ius mariadb102 \
     && yum clean all \
     && rm -rf /var/cache/yum
 
@@ -32,10 +33,6 @@ RUN mkdir -p /tmp/mhsendmail \
 
 # Install awscli to support data backfill workflows using S3 storage; segno for QR code generation
 RUN pip3 install awscli segno --no-cache-dir
-
-# Install modman
-RUN wget -q --no-check-certificate -O /usr/local/bin/modman "https://raw.github.com/colinmollenhour/modman/master/modman" \
-    && chmod +x /usr/local/bin/modman
 
 # Configure www-data user as primary php-fpm user for better local dev experience
 RUN useradd www-data \

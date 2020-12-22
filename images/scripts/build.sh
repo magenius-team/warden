@@ -68,6 +68,13 @@ for file in $(find ${SEARCH_PATH} -type f -name Dockerfile | sort -V); do
       fi
       BUILD_ARGS+=("--build-arg")
       BUILD_ARGS+=("PHP_VERSION")
+
+      # Support for PHP 8 images which require (temporarily at least) use of non-loader variant of base image
+      if [[ ${PHP_VARIANT:-} ]]; then
+        export PHP_VARIANT
+        BUILD_ARGS+=("--build-arg")
+        BUILD_ARGS+=("PHP_VARIANT")
+      fi
     else
       IMAGE_TAG+=":${IMAGE_SUFFIX}"
     fi
