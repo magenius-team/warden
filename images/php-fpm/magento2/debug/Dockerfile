@@ -1,9 +1,9 @@
-ARG PHP_VERSION
-FROM docker.io/magenius/php-fpm:${PHP_VERSION}-magento2
+ARG PHP_VERSION=
+FROM docker.io/magenius/php-fpm:${PHP_VERSION}
 USER root
 
 RUN set -eux \
-    && yum install -y php-pecl-xdebug \
+    && yum install -y php-pecl-xdebug3 \
     && yum clean all \
     && rm -rf /var/cache/yum
 

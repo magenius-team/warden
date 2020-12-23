@@ -41,12 +41,12 @@ before_script:
 #    BUILD_GROUP: php-fpm
 #    PHP_VERSION: "7.1"
 
-#build_php_72:
-#  <<: *job_definition
-#  stage: build_php
-#  variables:
-#    BUILD_GROUP: php-fpm
-#    PHP_VERSION: "7.2"
+build_php_72:
+  <<: *job_definition
+  stage: build_php
+  variables:
+    BUILD_GROUP: php-fpm
+    PHP_VERSION: "7.2"
 
 build_php_73:
   <<: *job_definition
