@@ -18,6 +18,7 @@ if [[ ${WARDEN_ENV_TYPE} =~ ^magento ]]; then
 fi
 
 ## configure xdebug version
+PHP_XDEBUG_3=${PHP_XDEBUG_3:-1} # enable xdebug3 if config not available at .env
 export XDEBUG_VERSION="debug" # xdebug2 image
 if [[ ${PHP_XDEBUG_3} -eq 1 ]]; then
     export XDEBUG_VERSION="xdebug3"
