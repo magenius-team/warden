@@ -15,10 +15,6 @@ sync:
         - "*~"
         - "*.sw[a-p]"
 
-        # IDE files
-        - ".idea/**"
-        - "!.idea/misc.xml"
-
         # Magento files
         - "/pub/media"
         - "/pub/static/**"
