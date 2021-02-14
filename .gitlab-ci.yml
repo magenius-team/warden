@@ -12,7 +12,12 @@ services:
 stages:
   - build_php
   - build_elasticsearch
+  - build_mailhog
+  - build_mariadb
+  - build_mysql
   - build_nginx
+  - build_rabbitmq
+  - build_redis
   - build_varnish
   - build_magepack
 
@@ -134,11 +139,51 @@ build_elasticsearch:
 
 ##############################
 
+build_mailhog:
+  <<: *job_definition
+  stage: build_mailhog
+  variables:
+    BUILD_GROUP: mailhog
+
+##############################
+
+build_mariadb:
+  <<: *job_definition
+  stage: build_mariadb
+  variables:
+    BUILD_GROUP: mariadb
+
+##############################
+
+build_mysql:
+  <<: *job_definition
+  stage: build_mysql
+  variables:
+    BUILD_GROUP: mysql
+
+##############################
+
 build_nginx:
   <<: *job_definition
   stage: build_nginx
   variables:
     BUILD_GROUP: nginx
+
+##############################
+
+build_rabbitmq:
+  <<: *job_definition
+  stage: build_rabbitmq
+  variables:
+    BUILD_GROUP: rabbitmq
+
+##############################
+
+build_redis:
+  <<: *job_definition
+  stage: build_redis
+  variables:
+    BUILD_GROUP: redis
 
 ##############################
 
