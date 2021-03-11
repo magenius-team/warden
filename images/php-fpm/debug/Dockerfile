@@ -3,7 +3,7 @@ FROM docker.io/magenius/php-fpm:${PHP_VERSION}
 USER root
 
 RUN set -eux \
-    && yum install -y php-pecl-xdebug3 \
+    && yum install -y php-pecl-xdebug \
     && yum clean all \
     && rm -rf /var/cache/yum
 
