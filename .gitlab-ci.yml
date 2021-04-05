@@ -16,7 +16,7 @@ services:
     - for BUILD_PHP_VERSION in ${PHP_VERSION_LIST}; do
         export PHP_VERSION=${BUILD_PHP_VERSION};
         for BUILD_GROUP in ${BUILD_GROUP_LIST}; do
-          ./images/scripts/build.sh --push "${BUILD_GROUP}"
+          ./images/scripts/build.sh --push "${BUILD_GROUP}";
         done;
       done
 
