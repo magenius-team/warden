@@ -9,6 +9,17 @@ services:
   script:
     - ./images/scripts/build.sh --push "${BUILD_GROUP}"
 
+.job-template: &php_job_definition
+  only:
+    - schedules
+  script:
+    - for BUILD_PHP_VERSION in ${PHP_VERSION_LIST} ; do
+        export PHP_VERSION=${BUILD_PHP_VERSION}
+        for BUILD_GROUP in ${BUILD_GROUP_LIST} ; do
+          ./images/scripts/build.sh --push "${BUILD_GROUP}"
+        done
+      done
+
 stages:
   - build_php
   - build_elasticsearch
@@ -27,12 +38,9 @@ before_script:
 
 ##############################
 
-#build_php_56:
-#  <<: *job_definition
-#  stage: build_php
-#  variables:
-#    BUILD_GROUP: php-fpm
-#    PHP_VERSION: "5.6"
+build_php:
+  <<: *php_job_definition
+  stage: build_php
 
 #build_php_71:
 #  <<: *job_definition
@@ -41,33 +49,33 @@ before_script:
 #    BUILD_GROUP: php-fpm
 #    PHP_VERSION: "7.1"
 
-build_php_72:
-  <<: *job_definition
-  stage: build_php
-  variables:
-    BUILD_GROUP: php-fpm
-    PHP_VERSION: "7.2"
+#build_php_72:
+#  <<: *job_definition
+#  stage: build_php
+#  variables:
+#    BUILD_GROUP: php-fpm
+#    PHP_VERSION: "7.2"
 
-build_php_73:
-  <<: *job_definition
-  stage: build_php
-  variables:
-    BUILD_GROUP: php-fpm
-    PHP_VERSION: "7.3"
+#build_php_73:
+#  <<: *job_definition
+#  stage: build_php
+#  variables:
+#    BUILD_GROUP: php-fpm
+#    PHP_VERSION: "7.3"
 
-build_php_74:
-  <<: *job_definition
-  stage: build_php
-  variables:
-    BUILD_GROUP: php-fpm
-    PHP_VERSION: "7.4"
+#build_php_74:
+#  <<: *job_definition
+#  stage: build_php
+#  variables:
+#    BUILD_GROUP: php-fpm
+#    PHP_VERSION: "7.4"
 
-build_php_80:
-  <<: *job_definition
-  stage: build_php
-  variables:
-    BUILD_GROUP: php-fpm
-    PHP_VERSION: "8.0"
+#build_php_80:
+#  <<: *job_definition
+#  stage: build_php
+#  variables:
+#    BUILD_GROUP: php-fpm
+#    PHP_VERSION: "8.0"
 
 ##############################
 
@@ -85,19 +93,19 @@ build_php_80:
 #    BUILD_GROUP: php-fpm/magento1
 #    PHP_VERSION: "7.1"
 
-build_magento1_php_72:
-  <<: *job_definition
-  stage: build_php
-  variables:
-    BUILD_GROUP: php-fpm/magento1
-    PHP_VERSION: "7.2"
+#build_magento1_php_72:
+#  <<: *job_definition
+#  stage: build_php
+#  variables:
+#    BUILD_GROUP: php-fpm/magento1
+#    PHP_VERSION: "7.2"
 
-build_magento1_php_73:
-  <<: *job_definition
-  stage: build_php
-  variables:
-    BUILD_GROUP: php-fpm/magento1
-    PHP_VERSION: "7.3"
+#build_magento1_php_73:
+#  <<: *job_definition
+#  stage: build_php
+#  variables:
+#    BUILD_GROUP: php-fpm/magento1
+#    PHP_VERSION: "7.3"
 
 ##############################
 
@@ -108,33 +116,33 @@ build_magento1_php_73:
 #    BUILD_GROUP: php-fpm/magento2
 #    PHP_VERSION: "7.1"
 
-build_magento2_php_72:
-  <<: *job_definition
-  stage: build_php
-  variables:
-    BUILD_GROUP: php-fpm/magento2
-    PHP_VERSION: "7.2"
+#build_magento2_php_72:
+#  <<: *job_definition
+#  stage: build_php
+#  variables:
+#    BUILD_GROUP: php-fpm/magento2
+#    PHP_VERSION: "7.2"
 
-build_magento2_php_73:
-  <<: *job_definition
-  stage: build_php
-  variables:
-    BUILD_GROUP: php-fpm/magento2
-    PHP_VERSION: "7.3"
+#build_magento2_php_73:
+#  <<: *job_definition
+#  stage: build_php
+#  variables:
+#    BUILD_GROUP: php-fpm/magento2
+#    PHP_VERSION: "7.3"
 
-build_magento2_php_74:
-  <<: *job_definition
-  stage: build_php
-  variables:
-    BUILD_GROUP: php-fpm/magento2
-    PHP_VERSION: "7.4"
+#build_magento2_php_74:
+#  <<: *job_definition
+#  stage: build_php
+#  variables:
+#    BUILD_GROUP: php-fpm/magento2
+#    PHP_VERSION: "7.4"
 
-build_magento2_php_80:
-  <<: *job_definition
-  stage: build_php
-  variables:
-    BUILD_GROUP: php-fpm/magento2
-    PHP_VERSION: "8.0"
+#build_magento2_php_80:
+#  <<: *job_definition
+#  stage: build_php
+#  variables:
+#    BUILD_GROUP: php-fpm/magento2
+#   PHP_VERSION: "8.0"
 
 ##############################
 
