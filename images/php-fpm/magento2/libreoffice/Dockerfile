@@ -1,9 +1,10 @@
+ARG ENV_SOURCE_IMAGE="wardenenv/php-fpm"
 ARG PHP_VERSION
-FROM docker.io/magenius/php-fpm:${PHP_VERSION}-magento2
+FROM ${ENV_SOURCE_IMAGE}:${PHP_VERSION}-magento2
 USER root
 
-RUN yum install -y libreoffice \
-    && yum clean all \
-    && rm -rf /var/cache/yum
+RUN dnf install -y libreoffice \
+    && dnf clean all \
+    && rm -rf /var/cache/dnf
 
 USER www-data
