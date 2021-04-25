@@ -4,13 +4,13 @@ trap 'error "$(printf "Command \`%s\` at $BASH_SOURCE:$LINENO failed with exit c
 
 ## find directory where this script is located following symlinks if neccessary
 readonly BASE_DIR="$(
-  cd "$(
-    dirname "$(
-      (readlink "${BASH_SOURCE[0]}" || echo "${BASH_SOURCE[0]}") \
-        | sed -e "s#^../#$(dirname "$(dirname "${BASH_SOURCE[0]}")")/#"
-    )"
-  )" >/dev/null \
-  && pwd
+    cd "$(
+        dirname "$(
+            (readlink "${BASH_SOURCE[0]}" || echo "${BASH_SOURCE[0]}") |
+                sed -e "s#^../#$(dirname "$(dirname "${BASH_SOURCE[0]}")")/#"
+        )"
+    )" >/dev/null &&
+        pwd
 )/.."
 pushd ${BASE_DIR} >/dev/null
 
