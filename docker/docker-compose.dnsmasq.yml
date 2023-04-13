@@ -3,7 +3,7 @@ services:
 
   dnsmasq:
     container_name: dnsmasq
-    image: wardenenv/dnsmasq
+    image: ${WARDEN_IMAGE_REPOSITORY}/dnsmasq:latest
     ports:
       - "127.0.0.1:53:53/udp"
     environment:

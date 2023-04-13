@@ -20,7 +20,7 @@ services:
 
   mailhog:
     container_name: mailhog
-    image: wardenenv/mailhog:1.0
+    image: ${WARDEN_IMAGE_REPOSITORY}/mailhog:1.0
     labels:
       - traefik.enable=true
       - traefik.http.routers.mailhog.tls=true
