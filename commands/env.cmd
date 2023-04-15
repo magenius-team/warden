@@ -26,6 +26,12 @@ if [[ ${WARDEN_NIGHTLY} -eq 1 ]]; then
     export WARDEN_SVC_PHP_IMAGE_SUFFIX="-indev"
 fi
 
+##configure environment node variant
+export WARDEN_SVC_NODE_VARIANT=""
+if [[ ${NODE_VERSION} != "" ]]; then
+    export WARDEN_SVC_NODE_VARIANT=-node${NODE_VERSION}
+fi
+
 ## configure xdebug version
 export XDEBUG_VERSION="debug" # xdebug2 image
 if [[ ${PHP_XDEBUG_3} -eq 1 ]]; then
