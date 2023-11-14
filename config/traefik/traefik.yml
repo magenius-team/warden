@@ -3,7 +3,8 @@ api:
   dashboard: true
 providers:
   file:
-    filename: /etc/traefik/dynamic.yml
+    directory: /etc/traefik/providers
+    watch: true
   docker:
     network: warden
     defaultRule: "Host(`{{ .Name }}.warden.test`)"
