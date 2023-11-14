@@ -51,6 +51,10 @@ openssl x509 -req -days 365 -sha256 -extensions v3_req            \
   -in "${WARDEN_SSL_DIR}/certs/${CERTIFICATE_NAME}.csr.pem"       \
   -out "${WARDEN_SSL_DIR}/certs/${CERTIFICATE_NAME}.crt.pem" 
 
+
+if [[ -f "${WARDEN_HOME_DIR}/.env" ]]; then
+    eval "$(grep "^WARDEN_IMAGE_REPOSITORY" "${WARDEN_HOME_DIR}/.env")"
+fi
 if [[ "$(cd "${WARDEN_HOME_DIR}" && ${DOCKER_COMPOSE_COMMAND} -p warden -f "${WARDEN_DIR}/docker/docker-compose.yml" ps -q traefik)" ]]
 then
   echo "==> Updating traefik"
