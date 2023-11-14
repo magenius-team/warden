@@ -59,7 +59,7 @@ if [[ "$OSTYPE" == "darwin"* ]]; then
     if [[ ! -d /etc/resolver ]]; then
         sudo mkdir /etc/resolver
     fi
-    echo "nameserver 127.0.0.1" | sudo tee /etc/resolver/test >/dev/null
+    echo "nameserver 127.0.0.1\n port 5053" | sudo tee /etc/resolver/test >/dev/null
   fi
 else
   warning "Manual configuration required for Automatic DNS resolution: https://docs.warden.dev/configuration/dns-resolver.html"
