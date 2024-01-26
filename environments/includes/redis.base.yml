@@ -3,6 +3,7 @@ services:
   redis:
     hostname: "${WARDEN_ENV_NAME}-redis"
     image: ${WARDEN_IMAGE_REPOSITORY}/redis:${REDIS_VERSION:-5.0}
+    platform: ${DOCKER_PLATFORM:-linux/amd64}
     volumes:
       - redis:/data
 

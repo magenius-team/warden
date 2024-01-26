@@ -1,6 +1,14 @@
 #!/usr/bin/env bash
 [[ ! ${WARDEN_DIR} ]] && >&2 echo -e "\033[31mThis script is not intended to be run directly!\033[0m" && exit 1
 
+## define source repository
+if [[ -f "${WARDEN_HOME_DIR}/.env" ]]; then
+  eval "$(sed 's/\r$//g' < "${WARDEN_HOME_DIR}/.env" | grep "^WARDEN_")"
+  eval "$(sed 's/\r$//g' < "${WARDEN_HOME_DIR}/.env" | grep "^DOCKER_")"
+fi
+export WARDEN_IMAGE_REPOSITORY="${WARDEN_IMAGE_REPOSITORY:-"docker.io/wardenenv"}"
+export DOCKER_PLATFORM="${DOCKER_PLATFORM:-"linux/amd64"}"
+
 WARDEN_ENV_PATH="$(locateEnvPath)" || exit $?
 loadEnvConfig "${WARDEN_ENV_PATH}" || exit $?
 assertDockerRunning
@@ -12,12 +20,6 @@ fi
 
 ## allow return codes from sub-process to bubble up normally
 trap '' ERR
-
-## define source repository
-if [[ -f "${WARDEN_HOME_DIR}/.env" ]]; then
-  eval "$(sed 's/\r$//g' < "${WARDEN_HOME_DIR}/.env" | grep "^WARDEN_")"
-fi
-export WARDEN_IMAGE_REPOSITORY="${WARDEN_IMAGE_REPOSITORY:-"docker.io/wardenenv"}"
 
 ## configure environment type defaults
 if [[ ${WARDEN_ENV_TYPE} =~ ^magento ]]; then

@@ -19,6 +19,7 @@ services:
   php-fpm:
     hostname: "${WARDEN_ENV_NAME}-php-fpm"
     image: ${WARDEN_IMAGE_REPOSITORY}/php-fpm${WARDEN_SVC_PHP_IMAGE_SUFFIX:-}:${PHP_VERSION:-7.4}${WARDEN_SVC_NODE_VARIANT:-}${WARDEN_SVC_PHP_VARIANT:-}
+    platform: ${DOCKER_PLATFORM:-linux/amd64}
     environment:
       - TRAEFIK_DOMAIN
       - TRAEFIK_SUBDOMAIN
@@ -34,6 +35,7 @@ services:
   php-debug:
     hostname: "${WARDEN_ENV_NAME}-php-debug"
     image: ${WARDEN_IMAGE_REPOSITORY}/php-fpm${WARDEN_SVC_PHP_IMAGE_SUFFIX:-}:${PHP_VERSION:-7.4}${WARDEN_SVC_NODE_VARIANT:-}${WARDEN_SVC_PHP_VARIANT:-}-${XDEBUG_VERSION:-debug}
+    platform: ${DOCKER_PLATFORM:-linux/amd64}
     environment:
       - TRAEFIK_DOMAIN
       - TRAEFIK_SUBDOMAIN

@@ -7,6 +7,7 @@ services:
   db:
     hostname: "${WARDEN_ENV_NAME}-mariadb"
     image: ${WARDEN_IMAGE_REPOSITORY}/${DB_DISTRIBUTION:-mariadb}:${DB_DISTRIBUTION_VERSION:-${MARIADB_VERSION:-10.4}}
+    platform: ${DOCKER_PLATFORM:-linux/amd64}
     environment:
       - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD:-app}
       - MYSQL_DATABASE=${MYSQL_DATABASE:-app}

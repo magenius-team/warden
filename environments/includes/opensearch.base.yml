@@ -3,6 +3,7 @@ services:
   opensearch:
     hostname: "${WARDEN_ENV_NAME}-opensearch"
     image: ${WARDEN_IMAGE_REPOSITORY}/opensearch:${OPENSEARCH_VERSION:-1.2}
+    platform: ${DOCKER_PLATFORM:-linux/amd64}
     labels:
       - traefik.enable=true
       - traefik.http.routers.${WARDEN_ENV_NAME}-opensearch.tls=true
