@@ -1,0 +1,4 @@
+version: "3.5"
+services:
+  redis:
+    platform: ${DOCKER_PLATFORM:-linux/amd64}

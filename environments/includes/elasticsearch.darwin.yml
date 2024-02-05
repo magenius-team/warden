@@ -1,0 +1,4 @@
+version: "3.5"
+services:
+  elasticsearch:
+    platform: ${DOCKER_PLATFORM:-linux/amd64}

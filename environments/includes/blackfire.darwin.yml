@@ -1,6 +1,7 @@
 version: "3.5"
 services:
   php-blackfire:
+    platform: ${DOCKER_PLATFORM:-linux/amd64}
     volumes:
       - /run/host-services/ssh-auth.sock:/run/host-services/ssh-auth.sock
 

@@ -1,5 +1,6 @@
 version: "3.5"
 services:
   nginx:
+    platform: ${DOCKER_PLATFORM:-linux/amd64}
     environment:
       - XDEBUG_CONNECT_BACK_HOST=${XDEBUG_CONNECT_BACK_HOST:-host.docker.internal}

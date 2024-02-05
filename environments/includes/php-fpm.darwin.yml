@@ -4,5 +4,9 @@ x-volumes: &volumes
   - /run/host-services/ssh-auth.sock:/run/host-services/ssh-auth.sock
 
 services:
-  php-fpm: { volumes: *volumes }
-  php-debug: { volumes: *volumes }
+  php-fpm:
+    platform: ${DOCKER_PLATFORM:-linux/amd64}
+    volumes: *volumes
+  php-debug:
+    platform: ${DOCKER_PLATFORM:-linux/amd64}
+    volumes: *volumes
