@@ -5,7 +5,7 @@ sync:
     watch:
       pollingInterval: 10
     ignore:
-      vcs: true
+      vcs: false
       paths:
         # System files
         - ".DS_Store"

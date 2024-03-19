@@ -124,6 +124,11 @@ if [[ ${WARDEN_BLACKFIRE} -eq 1 ]]; then
     appendEnvPartialIfExists "${WARDEN_ENV_TYPE}.blackfire"
 fi
 
+if [[ ${WARDEN_SPX} -eq 1 ]]; then
+    appendEnvPartialIfExists "php-spx"
+    appendEnvPartialIfExists "${WARDEN_ENV_TYPE}.php-spx"
+fi
+
 [[ ${WARDEN_ALLURE} -eq 1 ]] \
     && appendEnvPartialIfExists "allure"
 
