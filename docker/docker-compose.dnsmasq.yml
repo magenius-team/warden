@@ -5,7 +5,7 @@ services:
     container_name: dnsmasq
     image: ${WARDEN_IMAGE_REPOSITORY}/dnsmasq:latest
     ports:
-      - "127.0.0.1:5053:53/udp"
+      - "${DNSMASQ_LISTEN:-127.0.0.1}:5053:53/udp"
     environment:
       WARDEN_DNSMASQ_CONF: |-
         #dnsmasq config, for a complete example, see:
