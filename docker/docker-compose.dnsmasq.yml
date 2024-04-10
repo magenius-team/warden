@@ -1,6 +1,4 @@
-version: "3.5"
 services:
-
   dnsmasq:
     container_name: dnsmasq
     image: ${WARDEN_IMAGE_REPOSITORY}/dnsmasq:latest

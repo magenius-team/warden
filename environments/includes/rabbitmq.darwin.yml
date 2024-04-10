@@ -1,4 +1,3 @@
-version: "3.5"
 services:
   rabbitmq:
     platform: ${DOCKER_PLATFORM:-linux/amd64}
