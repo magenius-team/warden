@@ -9,12 +9,12 @@ services:
 
   checkoutdb:
     hostname: "${WARDEN_ENV_NAME}-checkoutdb"
-    image: ${WARDEN_IMAGE_REPOSITORY}/${DB_DISTRIBUTION:-mariadb}:${DB_DISTRIBUTION_VERSION:-${MARIADB_VERSION:-10.4}}
+    image: ${WARDEN_IMAGE_REPOSITORY}/${DB_DISTRIBUTION:-mysql}:${DB_DISTRIBUTION_VERSION:-${MYSQL_VERSION:-8.0}}
     environment:
-      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD:-magento}
-      - MYSQL_DATABASE=${MYSQL_DATABASE:-magento}
-      - MYSQL_USER=${MYSQL_USER:-magento}
-      - MYSQL_PASSWORD=${MYSQL_PASSWORD:-magento}
+      - MYSQL_ROOT_PASSWORD=${DB_ROOT_PASSWORD:-magento}
+      - MYSQL_DATABASE=${DB_DATABASE:-magento}
+      - MYSQL_USER=${DB_USER:-magento}
+      - MYSQL_PASSWORD=${DB_PASSWORD:-magento}
     command:
       - mysqld
       - --max_allowed_packet=1024M

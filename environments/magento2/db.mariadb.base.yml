@@ -1,0 +1,11 @@
+services:
+  db:
+    environment:
+      - MARIADB_ROOT_PASSWORD=${DB_ROOT_PASSWORD:-magento}
+      - MARIADB_DATABASE=${DB_DATABASE:-magento}
+      - MARIADB_USER=${DB_USER:-magento}
+      - MARIADB_PASSWORD=${DB_PASSWORD:-magento}
+    command:
+      - mariadbd
+      - --max_allowed_packet=1024M
+      - --explicit_defaults_for_timestamp=on

@@ -1,0 +1,7 @@
+services:
+  db:
+    environment:
+      - MARIADB_ROOT_PASSWORD=${DB_ROOT_PASSWORD:-wordpress}
+      - MARIADB_DATABASE=${DB_DATABASE:-wordpress}
+      - MARIADB_USER=${DB_USER:-wordpress}
+      - MARIADB_PASSWORD=${DB_PASSWORD:-wordpress}

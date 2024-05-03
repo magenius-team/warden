@@ -1,0 +1,3 @@
+services:
+  tmp-db:
+    platform: ${DOCKER_PLATFORM:-linux/amd64}

@@ -1,0 +1,7 @@
+services:
+  db:
+    environment:
+      - MYSQL_ROOT_PASSWORD=${DB_ROOT_PASSWORD:-symfony}
+      - MYSQL_DATABASE=${DB_DATABASE:-symfony}
+      - MYSQL_USER=${DB_USER:-symfony}
+      - MYSQL_PASSWORD=${DB_PASSWORD:-symfony}

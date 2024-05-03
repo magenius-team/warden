@@ -1,0 +1,8 @@
+services:
+  db:
+    environment:
+      - MARIADB_ROOT_PASSWORD=${DB_ROOT_PASSWORD:-laravel}
+      - MARIADB_DATABASE=${DB_DATABASE:-laravel}
+      - MARIADB_USER=${DB_USER:-laravel}
+      - MARIADB_PASSWORD=${DB_PASSWORD:-laravel}
+      - MARIADB_PASSWORD=${DB_PASSWORD:-laravel}

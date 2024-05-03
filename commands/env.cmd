@@ -88,7 +88,7 @@ fi
     && appendEnvPartialIfExists "nginx"
 
 [[ ${WARDEN_DB} -eq 1 ]] \
-    && appendEnvPartialIfExists "db"
+    && appendEnvPartialIfExists "db.${DB_DISTRIBUTION:-mariadb}"
 
 [[ ${WARDEN_ELASTICSEARCH} -eq 1 ]] \
     && appendEnvPartialIfExists "elasticsearch"
@@ -111,13 +111,13 @@ fi
 appendEnvPartialIfExists "${WARDEN_ENV_TYPE}"
 
 [[ ${WARDEN_TEST_DB} -eq 1 ]] \
-    && appendEnvPartialIfExists "${WARDEN_ENV_TYPE}.tests"
+    && appendEnvPartialIfExists "${WARDEN_ENV_TYPE}.tests.${DB_DISTRIBUTION:-mariadb}"
 
 [[ ${WARDEN_SPLIT_SALES} -eq 1 ]] \
-    && appendEnvPartialIfExists "${WARDEN_ENV_TYPE}.splitdb.sales"
+    && appendEnvPartialIfExists "${WARDEN_ENV_TYPE}.splitdb.sales.${DB_DISTRIBUTION:-mariadb}"
 
 [[ ${WARDEN_SPLIT_CHECKOUT} -eq 1 ]] \
-    && appendEnvPartialIfExists "${WARDEN_ENV_TYPE}.splitdb.checkout"
+    && appendEnvPartialIfExists "${WARDEN_ENV_TYPE}.splitdb.checkout.${DB_DISTRIBUTION:-mariadb}"
 
 if [[ ${WARDEN_BLACKFIRE} -eq 1 ]]; then
     appendEnvPartialIfExists "blackfire"

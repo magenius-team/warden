@@ -1,0 +1,21 @@
+services:
+  tmp-db:
+    hostname: "${WARDEN_ENV_NAME}-tmp-db"
+    image: ${WARDEN_IMAGE_REPOSITORY}/${DB_DISTRIBUTION:-mariadb}:${DB_DISTRIBUTION_VERSION:-${MYSQL_VERSION:-10.4}}
+    environment:
+      - MARIADB_ROOT_PASSWORD=${DB_ROOT_PASSWORD:-magento}
+      - MARIADB_DATABASE=magento_integration_tests
+      - MARIADB_USER=${DB_USER:-magento}
+      - MARIADB_PASSWORD=${DB_PASSWORD:-magento}
+    command:
+      - mariadbd
+      - --max_allowed_packet=1024M
+      - --explicit_defaults_for_timestamp=on
+    volumes:
+      - tmp-dbdata:/var/lib/mysql
+
+volumes:
+  tmp-dbdata:
+    driver_opts:
+      type: tmpfs
+      device: tmpfs

@@ -1,0 +1,7 @@
+services:
+  db:
+    environment:
+      - MYSQL_ROOT_PASSWORD=${DB_ROOT_PASSWORD:-laravel}
+      - MYSQL_DATABASE=${DB_DATABASE:-laravel}
+      - MYSQL_USER=${DB_USER:-laravel}
+      - MYSQL_PASSWORD=${DB_PASSWORD:-laravel}
