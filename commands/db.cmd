@@ -19,29 +19,56 @@ if [[ ! ${DB_CONTAINER} ]]; then
     fatal "No container found for db service."
 fi
 
+GREP_PREFIX="MYSQL_"
+if [[ ${DB_DISTRIBUTION:-mariadb} -eq "mariadb" ]]; then
+    GREP_PREFIX="MARIADB_"
+fi
+
 eval "$(
     docker container inspect ${DB_CONTAINER} --format '
         {{- range .Config.Env }}{{with split . "=" -}}
             {{- index . 0 }}='\''{{ range $i, $v := . }}{{ if $i }}{{ $v }}{{ end }}{{ end }}'\''{{println}}
         {{- end }}{{ end -}}
-    ' | grep "^MYSQL_"
+    ' | grep "^${GREP_PREFIX}"
 )"
+
+if [[ ${DB_DISTRIBUTION:-mariadb} -eq "mariadb" ]]; then
+    DB_USER=${MARIADB_USER}
+    DB_PASSWORD=${MARIADB_PASSWORD}
+    DB_DATABASE=${MARIADB_DATABASE}
+else
+    DB_USER=${MYSQL_USER}
+    DB_PASSWORD=${MYSQL_PASSWORD}
+    DB_DATABASE=${MYSQL_DATABASE}
+fi
 
 ## sub-command execution
 case "${WARDEN_PARAMS[0]}" in
     connect)
+        COMMAND=mysql
+        if [[ ${DB_DISTRIBUTION:-mariadb} -eq "mariadb" ]] && [[ $(version "${DB_DISTRIBUTION_VERSION}") -ge $(version '11.0') ]]; then
+            COMMAND=mariadb
+        fi
         "$WARDEN_BIN" env exec db \
-            mysql -u"${MYSQL_USER}" -p"${MYSQL_PASSWORD}" --database="${MYSQL_DATABASE}" "${WARDEN_PARAMS[@]:1}" "$@"
+            ${COMMAND} -u"${DB_USER}" -p"${DB_PASSWORD}" --database="${DB_DATABASE}" "${WARDEN_PARAMS[@]:1}" "$@"
         ;;
     import)
+        COMMAND=mysql
+        if [[ ${DB_DISTRIBUTION:-mariadb} -eq "mariadb" ]] && [[ $(version "${DB_DISTRIBUTION_VERSION}") -ge $(version '11.0') ]]; then
+            COMMAND=mariadb
+        fi
         LC_ALL=C sed -E 's/DEFINER[ ]*=[ ]*`[^`]+`@`[^`]+`/DEFINER=CURRENT_USER/g' \
             | LC_ALL=C sed -E '/\@\@(GLOBAL\.GTID_PURGED|SESSION\.SQL_LOG_BIN)/d' \
             | "$WARDEN_BIN" env exec -T db \
-            mysql -u"${MYSQL_USER}" -p"${MYSQL_PASSWORD}" --database="${MYSQL_DATABASE}" "${WARDEN_PARAMS[@]:1}" "$@"
+            ${COMMAND} -u"${DB_USER}" -p"${DB_PASSWORD}" --database="${DB_DATABASE}" "${WARDEN_PARAMS[@]:1}" "$@"
         ;;
     dump)
-            "$WARDEN_BIN" env exec -T db \
-            mysqldump -u"${MYSQL_USER}" -p"${MYSQL_PASSWORD}" "${MYSQL_DATABASE}" "${WARDEN_PARAMS[@]:1}" "$@"
+        COMMAND=mysqldump
+        if [[ ${DB_DISTRIBUTION:-mariadb} -eq "mariadb" ]] && [[ $(version "${DB_DISTRIBUTION_VERSION}") -ge $(version '11.0') ]]; then
+            COMMAND=mariadb-dump
+        fi
+        "$WARDEN_BIN" env exec -T db \
+            ${COMMAND} -u"${DB_USER}" -p"${DB_PASSWORD}" "${DB_DATABASE}" "${WARDEN_PARAMS[@]:1}" "$@"
         ;;
     *)
         fatal "The command \"${WARDEN_PARAMS[0]}\" does not exist. Please use --help for usage."
