@@ -20,7 +20,7 @@ if [[ ! ${DB_CONTAINER} ]]; then
 fi
 
 GREP_PREFIX="MYSQL_"
-if [[ ${DB_DISTRIBUTION:-mariadb} -eq "mariadb" ]]; then
+if [[ ${DB_DISTRIBUTION:-mariadb} = "mariadb" ]]; then
     GREP_PREFIX="MARIADB_"
 fi
 
@@ -32,7 +32,7 @@ eval "$(
     ' | grep "^${GREP_PREFIX}"
 )"
 
-if [[ ${DB_DISTRIBUTION:-mariadb} -eq "mariadb" ]]; then
+if [[ ${DB_DISTRIBUTION:-mariadb} = "mariadb" ]]; then
     DB_USER=${MARIADB_USER}
     DB_PASSWORD=${MARIADB_PASSWORD}
     DB_DATABASE=${MARIADB_DATABASE}
@@ -46,7 +46,7 @@ fi
 case "${WARDEN_PARAMS[0]}" in
     connect)
         COMMAND=mysql
-        if [[ ${DB_DISTRIBUTION:-mariadb} -eq "mariadb" ]] && [[ $(version "${DB_DISTRIBUTION_VERSION}") -ge $(version '11.0') ]]; then
+        if [[ ${DB_DISTRIBUTION:-mariadb} = "mariadb" ]] && [[ $(version "${DB_DISTRIBUTION_VERSION}") -ge $(version '11.0') ]]; then
             COMMAND=mariadb
         fi
         "$WARDEN_BIN" env exec db \
@@ -54,7 +54,7 @@ case "${WARDEN_PARAMS[0]}" in
         ;;
     import)
         COMMAND=mysql
-        if [[ ${DB_DISTRIBUTION:-mariadb} -eq "mariadb" ]] && [[ $(version "${DB_DISTRIBUTION_VERSION}") -ge $(version '11.0') ]]; then
+        if [[ ${DB_DISTRIBUTION:-mariadb} = "mariadb" ]] && [[ $(version "${DB_DISTRIBUTION_VERSION}") -ge $(version '11.0') ]]; then
             COMMAND=mariadb
         fi
         LC_ALL=C sed -E 's/DEFINER[ ]*=[ ]*`[^`]+`@`[^`]+`/DEFINER=CURRENT_USER/g' \
@@ -64,7 +64,7 @@ case "${WARDEN_PARAMS[0]}" in
         ;;
     dump)
         COMMAND=mysqldump
-        if [[ ${DB_DISTRIBUTION:-mariadb} -eq "mariadb" ]] && [[ $(version "${DB_DISTRIBUTION_VERSION}") -ge $(version '11.0') ]]; then
+        if [[ ${DB_DISTRIBUTION:-mariadb} = "mariadb" ]] && [[ $(version "${DB_DISTRIBUTION_VERSION}") -ge $(version '11.0') ]]; then
             COMMAND=mariadb-dump
         fi
         "$WARDEN_BIN" env exec -T db \
