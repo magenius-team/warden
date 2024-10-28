@@ -141,3 +141,9 @@ function appendEnvPartialIfExists () {
         fi
     done
 }
+
+function version_ge() {
+  # Compare two version strings $1 and $2
+  # Return 0 if $1 >= $2, 1 otherwise
+  [ "$(printf '%s\n' "$2" "$1" | sort -V | head -n1)" != "$1" ]
+}
