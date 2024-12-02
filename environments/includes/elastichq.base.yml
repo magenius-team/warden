@@ -1,6 +1,7 @@
 services:
   elasticsearch-hq:
     hostname: "${WARDEN_ENV_NAME}-elasticsearch-hq"
+    platform: linux/amd64
     image: elastichq/elasticsearch-hq:latest
     labels:
       - traefik.enable=true
