@@ -1,7 +1,7 @@
 services:
   elasticsearch-hq:
     hostname: "${WARDEN_ENV_NAME}-elasticsearch-hq"
-    image: ${WARDEN_IMAGE_REPOSITORY}/elastic-hq:latest
+    image: elastichq/elasticsearch-hq:latest
     labels:
       - traefik.enable=true
       - traefik.http.routers.${WARDEN_ENV_NAME}-elasticsearch-hq.tls=true
