@@ -95,5 +95,7 @@ if [[ ! -f "${WARDEN_HOME_DIR}/.env" ]]; then
 		WARDEN_DNSMASQ_ENABLE=1
 		# Specify which mail trapping service to use: "mailhog" or "mailpit"
 		WARDEN_MAIL_SERVICE=mailhog
+		# Set to "1" to enable Mutagen
+        WARDEN_MUTAGEN_ENABLE=1
 	EOT
 fi

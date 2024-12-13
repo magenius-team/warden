@@ -1,3 +1,6 @@
+x-volumes: &volumes
+  - .${WARDEN_WEB_ROOT:-}/:/var/www/html:cached
+
 services:
   magepack:
     hostname: "${WARDEN_ENV_NAME}-magepack"
@@ -10,3 +13,4 @@ services:
       - ${TRAEFIK_SUBDOMAIN:-app}.${TRAEFIK_DOMAIN}:${TRAEFIK_ADDRESS:-0.0.0.0}
     depends_on:
       - php-fpm
+    volumes: *volumes

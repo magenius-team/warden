@@ -140,6 +140,18 @@ function appendEnvPartialIfExists () {
             DOCKER_COMPOSE_ARGS+=("-f" "${PARTIAL_PATH}")
         fi
     done
+
+    if [[ "${WARDEN_ENV_SUBT}" == "darwin" ]] && [[ "${WARDEN_MUTAGEN_ENABLE}" == "1" ]]; then
+        for PARTIAL_PATH in \
+            "${WARDEN_DIR}/environments/${WARDEN_ENV_TYPE}/${PARTIAL_NAME}.mutagen.volumes.yml" \
+            "${WARDEN_HOME_DIR}/environments/${WARDEN_ENV_TYPE}/${PARTIAL_NAME}.mutagen.volumes.yml" \
+            "${WARDEN_ENV_PATH}/.warden/environments/${WARDEN_ENV_TYPE}/${PARTIAL_NAME}.mutagen.volumes.yml"
+        do
+            if [[ -f "${PARTIAL_PATH}" ]]; then
+                DOCKER_COMPOSE_ARGS+=("-f" "${PARTIAL_PATH}")
+            fi
+        done
+    fi;
 }
 
 function version_ge() {

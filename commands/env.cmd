@@ -32,6 +32,9 @@ if [[ ${WARDEN_NIGHTLY} -eq 1 ]]; then
     export WARDEN_SVC_PHP_IMAGE_SUFFIX="-indev"
 fi
 
+## configure mutagen enable by default
+WARDEN_MUTAGEN_ENABLE=${WARDEN_MUTAGEN_ENABLE:-1}
+
 ##configure environment node variant
 export WARDEN_SVC_NODE_VARIANT=""
 if [[ ${NODE_VERSION} != "" ]]; then
@@ -187,7 +190,10 @@ TRAEFIK_ADDRESS="$(docker container inspect traefik \
 )"
 export TRAEFIK_ADDRESS;
 
-if [[ $OSTYPE =~ ^darwin ]]; then
+export MUTAGEN_SYNC_FILE;
+if [[ $OSTYPE =~ ^darwin ]] && [[ ${WARDEN_MUTAGEN_ENABLE} -eq 1 ]] \
+    && { [[ "${WARDEN_PARAMS[0]}" == "up" ]] || [[ "${WARDEN_PARAMS[0]}" == "start" ]] ||  [[ "${WARDEN_PARAMS[0]}" == "stop" ]] ||  [[ "${WARDEN_PARAMS[0]}" == "down" ]]; }; then
+
     export MUTAGEN_SYNC_FILE="${WARDEN_DIR}/environments/${WARDEN_ENV_TYPE}/${WARDEN_ENV_TYPE}.mutagen.yml"
 
     if [[ -f "${WARDEN_HOME_DIR}/environments/${WARDEN_ENV_TYPE}/${WARDEN_ENV_TYPE}.mutagen.yml" ]]; then
