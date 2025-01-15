@@ -4,4 +4,4 @@ x-volumes: &volumes
   - appdata:/var/www/html
 
 services:
-  php-blackfire: { volumes: *volumes }
+  php-spx: { volumes: *volumes }
