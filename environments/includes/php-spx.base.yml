@@ -16,8 +16,9 @@ services:
     environment:
       - TRAEFIK_DOMAIN
       - TRAEFIK_SUBDOMAIN
+      - WARDEN_MAIL_SERVICE=${WARDEN_MAIL_SERVICE:-mailpit}
       - SSH_AUTH_SOCK=${SSH_AUTH_SOCK_PATH_ENV:-/tmp/ssh-auth.sock}
-      - NODE_VERSION=${NODE_VERSION:-}
+      - NODE_VERSION=${NODE_VERSION:-12}
       - COMPOSER_VERSION=${COMPOSER_VERSION:-1}
       - COMPOSER_MEMORY_LIMIT=-1
       - HISTFILE=/bash_history/.bash_history

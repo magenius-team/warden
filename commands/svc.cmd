@@ -25,6 +25,8 @@ if [[ -f "${WARDEN_HOME_DIR}/.env" ]]; then
     eval "$(grep "^WARDEN_PORTAINER_ENABLE" "${WARDEN_HOME_DIR}/.env")"
     # Check Mail service
     eval "$(grep "^WARDEN_MAIL_SERVICE" "${WARDEN_HOME_DIR}/.env")"
+    # Check PMA
+    eval "$(grep "^WARDEN_PHPMYADMIN_ENABLE" "${WARDEN_HOME_DIR}/.env")"
 fi
 
 WARDEN_MAIL_SERVICE="${WARDEN_MAIL_SERVICE:-mailhog}"
@@ -47,6 +49,21 @@ WARDEN_PORTAINER_ENABLE="${WARDEN_PORTAINER_ENABLE:-0}"
 if [[ "${WARDEN_PORTAINER_ENABLE}" == 1 ]]; then
     DOCKER_COMPOSE_ARGS+=("-f")
     DOCKER_COMPOSE_ARGS+=("${WARDEN_DIR}/docker/docker-compose.portainer.yml")
+fi
+
+## add phpmyadmin docker-compose
+## phpmyadmin is disabled by default
+WARDEN_PHPMYADMIN_ENABLE="${WARDEN_PHPMYADMIN_ENABLE:-0}"
+if [[ "${WARDEN_PHPMYADMIN_ENABLE}" == 1 ]]; then
+    if [[ -d "${WARDEN_HOME_DIR}/etc/phpmyadmin/config.user.inc.php" ]]; then
+        rm -rf ${WARDEN_HOME_DIR}/etc/phpmyadmin/config.user.inc.php
+    fi
+    if [[ ! -f "${WARDEN_HOME_DIR}/etc/phpmyadmin/config.user.inc.php" ]]; then
+        mkdir -p "${WARDEN_HOME_DIR}/etc/phpmyadmin"
+        touch ${WARDEN_HOME_DIR}/etc/phpmyadmin/config.user.inc.php
+    fi
+    DOCKER_COMPOSE_ARGS+=("-f")
+    DOCKER_COMPOSE_ARGS+=("${WARDEN_DIR}/docker/docker-compose.phpmyadmin.yml")
 fi
 
 ## allow an additional docker-compose file to be loaded for global services
@@ -79,15 +96,15 @@ if [[ "${WARDEN_PARAMS[0]}" == "up" ]]; then
 		  stores:
 		    default:
 		      defaultCertificate:
-		        certFile: /etc/ssl/certs/${WARDEN_SERVICE_DOMAIN}.crt.pem
-		        keyFile: /etc/ssl/certs/${WARDEN_SERVICE_DOMAIN}.key.pem
+		        certFile: /etc/ssl/certs/warden/${WARDEN_SERVICE_DOMAIN}.crt.pem
+		        keyFile: /etc/ssl/certs/warden/${WARDEN_SERVICE_DOMAIN}.key.pem
 		  certificates:
 	EOT
 
     for cert in $(find "${WARDEN_SSL_DIR}/certs" -type f -name "*.crt.pem" | sed -E 's#^.*/ssl/certs/(.*)\.crt\.pem$#\1#'); do
         cat >> "${WARDEN_HOME_DIR}/etc/traefik/providers/dynamic.yml" <<-EOF
-		    - certFile: /etc/ssl/certs/${cert}.crt.pem
-		      keyFile: /etc/ssl/certs/${cert}.key.pem
+		    - certFile: /etc/ssl/certs/warden/${cert}.crt.pem
+		      keyFile: /etc/ssl/certs/warden/${cert}.key.pem
 		EOF
     done
 
@@ -109,3 +126,5 @@ if [[ "${WARDEN_PARAMS[0]}" == "up" ]]; then
         connectPeeredServices "${network}"
     done
 fi
+
+regeneratePMAConfig
