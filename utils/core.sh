@@ -2,7 +2,7 @@
 [[ ! ${WARDEN_DIR} ]] && >&2 echo -e "\033[31mThis script is not intended to be run directly!\033[0m" && exit 1
 
 ## global service containers to be connected with the project docker network
-DOCKER_PEERED_SERVICES=("traefik" "tunnel" "mailhog")
+DOCKER_PEERED_SERVICES=("traefik" "tunnel" "mailhog" "buggregator")
 if [[ "${WARDEN_PHPMYADMIN_ENABLE}" == 1 ]]; then
   DOCKER_PEERED_SERVICES+=("phpmyadmin")
 fi
