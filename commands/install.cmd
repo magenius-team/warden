@@ -93,8 +93,9 @@ if [[ ! -f "${WARDEN_HOME_DIR}/.env" ]]; then
 		WARDEN_PORTAINER_ENABLE=0
 		# Set to "0" to disable DNSMasq
 		WARDEN_DNSMASQ_ENABLE=1
-		# Specify which mail trapping service to use: "mailhog" or "mailpit"
-		WARDEN_MAIL_SERVICE=mailpit
+		# Specify which mail trapping service to use: "mailhog" or "mailpit" or "buggregator"
+		# Buggregator smtp used by default
+		WARDEN_MAIL_SERVICE=buggregator
 		# Set to "1" to enable Mutagen
         WARDEN_MUTAGEN_ENABLE=1
 		# Set to "0" to disable phpMyAdmin

@@ -1,6 +1,6 @@
 services:
   mailpit:
-    container_name: mailhog
+    container_name: mailpit
     image: axllent/mailpit:${WARDEN_MAILPIT_VERSION:-latest}
     environment:
       - MP_DATABASE=/data/mailpit.db

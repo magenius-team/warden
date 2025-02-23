@@ -29,13 +29,11 @@ if [[ -f "${WARDEN_HOME_DIR}/.env" ]]; then
     eval "$(grep "^WARDEN_PHPMYADMIN_ENABLE" "${WARDEN_HOME_DIR}/.env")"
 fi
 
-WARDEN_MAIL_SERVICE="${WARDEN_MAIL_SERVICE:-mailhog}"
-if [[ "$WARDEN_MAIL_SERVICE" == "mailpit" ]]; then
+## buggregator smtp service is enabled by default
+WARDEN_MAIL_SERVICE="${WARDEN_MAIL_SERVICE:-buggregator}"
+if [[ "$WARDEN_MAIL_SERVICE" == "mailpit" || "$WARDEN_MAIL_SERVICE" == "mailhog" ]]; then
     DOCKER_COMPOSE_ARGS+=("-f")
-    DOCKER_COMPOSE_ARGS+=("${WARDEN_DIR}/docker/docker-compose.mailpit.yml")
-else
-    DOCKER_COMPOSE_ARGS+=("-f")
-    DOCKER_COMPOSE_ARGS+=("${WARDEN_DIR}/docker/docker-compose.mailhog.yml")
+    DOCKER_COMPOSE_ARGS+=("${WARDEN_DIR}/docker/docker-compose.${WARDEN_MAIL_SERVICE}.yml")
 fi
 
 ## add dnsmasq docker-compose

@@ -1,6 +1,6 @@
 services:
   mailhog:
-    container_name: mailhog
+    container_name: mailpit
     image: ${WARDEN_IMAGE_REPOSITORY:-mailhog}/mailhog:1.0
     labels:
       - traefik.enable=true
