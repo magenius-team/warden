@@ -25,6 +25,8 @@ services:
       - NODE_VERSION=${NODE_VERSION:-}
       - COMPOSER_VERSION=${COMPOSER_VERSION:-1}
       - COMPOSER_MEMORY_LIMIT=-1
+      - VAR_DUMPER_FORMAT=server
+      - VAR_DUMPER_SERVER=buggregator:9912
       - HISTFILE=/bash_history/.bash_history
       - CHOWN_DIR_LIST=${CHOWN_DIR_LIST:-}
     volumes: *volumes
@@ -42,6 +44,8 @@ services:
       - COMPOSER_VERSION=${COMPOSER_VERSION:-1}
       - COMPOSER_MEMORY_LIMIT=-1
       - PHP_IDE_CONFIG=serverName=${WARDEN_ENV_NAME}-docker
+      - VAR_DUMPER_FORMAT=server
+      - VAR_DUMPER_SERVER=buggregator:9912
       - HISTFILE=/bash_history/.bash_history
       - CHOWN_DIR_LIST=${CHOWN_DIR_LIST:-}
     volumes: *volumes

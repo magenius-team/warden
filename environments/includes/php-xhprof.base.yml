@@ -22,6 +22,8 @@ services:
       - NODE_VERSION=${NODE_VERSION:-12}
       - COMPOSER_VERSION=${COMPOSER_VERSION:-1}
       - COMPOSER_MEMORY_LIMIT=-1
+      - VAR_DUMPER_FORMAT=server
+      - VAR_DUMPER_SERVER=buggregator:9912
       - HISTFILE=/bash_history/.bash_history
       - CHOWN_DIR_LIST=${CHOWN_DIR_LIST:-}
     volumes: *volumes
