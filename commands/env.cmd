@@ -54,6 +54,10 @@ if [[ ${PHP_XDEBUG_3} -eq 1 ]]; then
     export XDEBUG_VERSION="xdebug3"
 fi
 
+if [[ ${WARDEN_MONOLOG_ENABLED} -eq 1 ]]; then
+    export MONOLOG_SERVER=tcp://buggregator:9913
+fi
+
 if [[ ${WARDEN_ENV_TYPE} != local ]]; then
     WARDEN_NGINX=${WARDEN_NGINX:-1}
     WARDEN_DB=${WARDEN_DB:-1}
