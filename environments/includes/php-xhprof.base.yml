@@ -23,8 +23,8 @@ services:
       - COMPOSER_VERSION=${COMPOSER_VERSION:-1}
       - COMPOSER_MEMORY_LIMIT=-1
       - VAR_DUMPER_FORMAT=server
-      - VAR_DUMPER_SERVER=buggregator:9912
-      - MONOLOG_SERVER=${MONOLOG_SERVER:-}
+      - VAR_DUMPER_SERVER=${VAR_DUMPER_SERVER:-buggregator:9912}
+      - MONOLOG_SERVER=${MONOLOG_SERVER:-buggregator:9913}
       - HISTFILE=/bash_history/.bash_history
       - CHOWN_DIR_LIST=${CHOWN_DIR_LIST:-}
     volumes: *volumes
