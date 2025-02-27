@@ -100,5 +100,7 @@ if [[ ! -f "${WARDEN_HOME_DIR}/.env" ]]; then
         WARDEN_MUTAGEN_ENABLE=1
 		# Set to "0" to disable phpMyAdmin
 		WARDEN_PHPMYADMIN_ENABLE=0
+
+		WARDEN_IMAGE_REPOSITORY=ghcr.io/magenius-team
 	EOT
 fi
