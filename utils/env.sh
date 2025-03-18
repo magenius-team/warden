@@ -57,6 +57,14 @@ function loadEnvConfig () {
         ;;
     esac
 
+    ## configure mutagen enable by default for MacOs
+    if [[ $OSTYPE =~ ^darwin ]]; then
+      export WARDEN_MUTAGEN_ENABLE=${WARDEN_MUTAGEN_ENABLE:-1}
+    else
+      # Disable mutagen for non-MacOS systems
+      export WARDEN_MUTAGEN_ENABLE=0
+    fi
+
     assertValidEnvType
 }
 
