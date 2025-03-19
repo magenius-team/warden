@@ -6,7 +6,7 @@ if [[ -f "${WARDEN_HOME_DIR}/.env" ]]; then
   eval "$(sed 's/\r$//g' < "${WARDEN_HOME_DIR}/.env" | grep "^WARDEN_")"
   eval "$(sed 's/\r$//g' < "${WARDEN_HOME_DIR}/.env" | grep "^DOCKER_")"
 fi
-export WARDEN_IMAGE_REPOSITORY="${WARDEN_IMAGE_REPOSITORY:-"docker.io/wardenenv"}"
+export WARDEN_IMAGE_REPOSITORY="${WARDEN_IMAGE_REPOSITORY:-"ghcr.io/magenius-team"}"
 
 ## define docker platform
 DOCKER_PLATFORM="${DOCKER_PLATFORM:-"linux/amd64"}"
