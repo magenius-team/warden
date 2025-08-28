@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+[[ ! ${WARDEN_DIR} ]] && >&2 echo -e "\033[31mThis script is not intended to be run directly!\033[0m" && exit 1
+
+WARDEN_USAGE=$(cat <<EOF
+\033[33mUsage:\033[0m
+  s3                                      Launches an interactive s3 console
+  s3 sync <local-folder> <bucket-folder>  Sync a local folder to a bucket folder (always overwrite)
+  s3 cp <local-file> <bucket-file>        Copy a local file to a bucket file
+  s3 rm <bucket-file>                     Remove a file from a bucket
+
+\033[33mOptions:\033[0m
+  -h, --help        Display this help menu
+EOF
+)

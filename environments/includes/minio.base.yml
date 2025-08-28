@@ -1,0 +1,55 @@
+services:
+  minio:
+    image: minio/minio:latest
+    hostname: "${WARDEN_ENV_NAME}-minio"
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: minio
+      MINIO_ROOT_PASSWORD: miniopwd
+      WARDEN_ENV_NAME: ${WARDEN_ENV_NAME}
+    volumes:
+      - minio-data:/data
+      - .${WARDEN_WEB_ROOT:-}/:/var/www/html:cached
+    healthcheck:
+      test: [ "CMD-SHELL", "curl -fsS http://localhost:9000/minio/health/ready >/dev/null 2>&1" ]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.${WARDEN_ENV_NAME}-minio.tls=true
+      - traefik.http.routers.${WARDEN_ENV_NAME}-minio.rule=Host(`minio.${TRAEFIK_DOMAIN}`)
+      - traefik.http.routers.${WARDEN_ENV_NAME}-minio.service=${WARDEN_ENV_NAME}-minio
+      - traefik.http.services.${WARDEN_ENV_NAME}-minio.loadbalancer.server.port=9001
+      - traefik.http.routers.${WARDEN_ENV_NAME}-s3.tls=true
+      - traefik.http.routers.${WARDEN_ENV_NAME}-s3.rule=Host(`s3.${TRAEFIK_DOMAIN}`)
+      - traefik.http.routers.${WARDEN_ENV_NAME}-s3.service=${WARDEN_ENV_NAME}-s3
+      - traefik.http.services.${WARDEN_ENV_NAME}-s3.loadbalancer.server.port=9000
+      - traefik.docker.network=${WARDEN_ENV_NAME}_default
+
+  minio-mc-init:
+    image: minio/mc:latest
+    depends_on:
+      minio:
+        condition: service_healthy
+    environment:
+      MINIO_ROOT_USER: minio
+      MINIO_ROOT_PASSWORD: miniopwd
+      WARDEN_ENV_NAME: ${WARDEN_ENV_NAME}
+    entrypoint:
+      - /bin/bash
+      - -lc
+      - |
+        set -eux
+        mc --version
+        mc alias set local http://minio:9000 "$${MINIO_ROOT_USER}" "$${MINIO_ROOT_PASSWORD}"
+        # wait until minio is really ready to accept connections
+        until mc ready local >/dev/null 2>&1; do sleep 1; done
+        # rplace uppercase and underscores with lowercase and dashes
+        BUCKET_NAME="$(printf "%s" "$${WARDEN_ENV_NAME}" | tr '[:upper:]' '[:lower:]' | tr '_' '-')"
+        mc mb --ignore-existing "local/$${BUCKET_NAME}"
+        mc anonymous set download "local/$${BUCKET_NAME}" || true
+    restart: no
+
+volumes:
+  minio-data:

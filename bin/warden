@@ -80,7 +80,7 @@ fi
 ## parse arguments
 while (( "$#" )); do
   case "$1" in
-    -h|--help)
+    -h|--help|help)
       WARDEN_HELP=1
       break
       ;;
