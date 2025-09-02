@@ -52,7 +52,14 @@ function assertDockerRunning {
 function connectPeeredServices {
   for svc in ${DOCKER_PEERED_SERVICES[@]}; do
     echo "Connecting ${svc} to $1 network"
-    (docker network connect "$1" ${svc} 2>&1| grep -v 'already exists in network') || true
+    if [[ "${svc}" == "traefik" && ${WARDEN_S3:-0} == 1 ]]; then
+      if docker network inspect "$1" | grep -q "\"Name\": \"traefik\""; then
+        docker network disconnect "$1" traefik 2>/dev/null || true
+      fi
+      docker network connect --alias "s3.${TRAEFIK_DOMAIN}" "$1" ${svc} 2>&1 | grep -v 'already exists in network' || true
+    else
+      (docker network connect "$1" ${svc} 2>&1 | grep -v 'already exists in network') || true
+    fi
   done
 }
 
