@@ -1,6 +1,6 @@
 services:
   minio:
-    image: minio/minio:latest
+    image: ${WARDEN_IMAGE_REPOSITORY}/minio:${MINIO_VERSION:-latest}
     hostname: "${WARDEN_ENV_NAME}-minio"
     command: server /data --console-address ":9001"
     environment:
