@@ -16,6 +16,11 @@ readonly WARDEN_DIR="$(
 export readonly WARDEN_BIN="${WARDEN_DIR}/bin/warden"
 export readonly DOCKER_COMPOSE_COMMAND="${DOCKER_COMPOSE_COMMAND:-"docker compose"}"
 
+## define and export global shared directory paths
+export readonly WARDEN_HOME_DIR="${WARDEN_HOME_DIR:-"$HOME/.warden"}"
+export readonly WARDEN_SSL_DIR="${WARDEN_HOME_DIR}/ssl"
+export readonly WARDEN_COMPOSER_DIR="${WARDEN_COMPOSER_DIR:-"$HOME/.composer"}"
+
 source "${WARDEN_DIR}/utils/core.sh"
 source "${WARDEN_DIR}/utils/svc.sh"
 source "${WARDEN_DIR}/utils/env.sh"
@@ -34,11 +39,6 @@ if [[ "${DOCKER_COMPOSE_COMMAND}" == "docker compose" ]]; then
     fatal "docker compose version should be ${DOCKER_COMPOSE_REQUIRE} or higher (${DOCKER_COMPOSE_VERSION} installed)"
   fi
 fi
-
-## define and export global shared directory paths
-export readonly WARDEN_HOME_DIR="${WARDEN_HOME_DIR:-"$HOME/.warden"}"
-export readonly WARDEN_SSL_DIR="${WARDEN_HOME_DIR}/ssl"
-export readonly WARDEN_COMPOSER_DIR="${WARDEN_COMPOSER_DIR:-"$HOME/.composer"}"
 
 ## declare variables for flags and arguments
 declare WARDEN_HELP=

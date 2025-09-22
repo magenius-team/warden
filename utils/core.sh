@@ -1,6 +1,13 @@
 #!/usr/bin/env bash
 [[ ! ${WARDEN_DIR} ]] && >&2 echo -e "\033[31mThis script is not intended to be run directly!\033[0m" && exit 1
 
+if [[ -f "${WARDEN_HOME_DIR}/.env" ]]; then
+  eval "$(grep "^WARDEN_PHPMYADMIN_ENABLE" "${WARDEN_HOME_DIR}/.env")"
+  export WARDEN_PHPMYADMIN_ENABLE="${WARDEN_PHPMYADMIN_ENABLE:-1}"
+  eval "$(grep "^WARDEN_MAIL_SERVICE" "${WARDEN_HOME_DIR}/.env")"
+  export WARDEN_MAIL_SERVICE="${WARDEN_MAIL_SERVICE:-buggregator}"
+fi
+
 ## global service containers to be connected with the project docker network
 DOCKER_PEERED_SERVICES=("traefik" "tunnel" "buggregator")
 if [[ "${WARDEN_PHPMYADMIN_ENABLE}" == 1 ]]; then
@@ -8,7 +15,7 @@ if [[ "${WARDEN_PHPMYADMIN_ENABLE}" == 1 ]]; then
 fi
 
 if [[ "${WARDEN_MAIL_SERVICE}" == "mailhog" || "${WARDEN_MAIL_SERVICE}" == "mailpit" ]]; then
-  DOCKER_PEERED_SERVICES+=("maipit")
+  DOCKER_PEERED_SERVICES+=("mailpit")
 fi
 
 ## messaging functions
