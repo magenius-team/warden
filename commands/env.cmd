@@ -160,8 +160,10 @@ if [[ ${WARDEN_PHP_XHPROF} -eq 1 ]]; then
     appendEnvPartialIfExists "${WARDEN_ENV_TYPE}.php-xhprof"
 fi
 
-[[ ${WARDEN_S3} -eq 1 ]] \
-    && appendEnvPartialIfExists "minio"
+if [[ ${WARDEN_S3} -eq 1 ]]; then
+    appendEnvPartialIfExists "minio"
+    appendEnvPartialIfExists "${WARDEN_ENV_TYPE}.minio"
+fi
 
 if [[ -f "${WARDEN_ENV_PATH}/.warden/warden-env.yml" ]]; then
     DOCKER_COMPOSE_ARGS+=("-f")

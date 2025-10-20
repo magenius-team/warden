@@ -1,3 +1,7 @@
+x-volumes: &volumes
+  - minio-data:/data
+  - .${WARDEN_WEB_ROOT:-}/:/var/www/html:cached
+
 services:
   minio:
     image: ${WARDEN_IMAGE_REPOSITORY}/minio:${MINIO_VERSION:-latest}
@@ -7,9 +11,7 @@ services:
       MINIO_ROOT_USER: minio
       MINIO_ROOT_PASSWORD: miniopwd
       WARDEN_ENV_NAME: ${WARDEN_ENV_NAME}
-    volumes:
-      - minio-data:/data
-      - .${WARDEN_WEB_ROOT:-}/:/var/www/html:cached
+    volumes: *volumes
     healthcheck:
       test: [ "CMD-SHELL", "curl -fsS http://localhost:9000/minio/health/ready >/dev/null 2>&1" ]
       interval: 5s
