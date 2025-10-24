@@ -39,6 +39,9 @@ if [[ ${WARDEN_NIGHTLY} -eq 1 ]]; then
     export WARDEN_SVC_PHP_IMAGE_SUFFIX="-indev"
 fi
 
+## configure environment domain for traefik v3 regex
+export TRAEFIK_DOMAIN_RX="$(printf '%s' "$TRAEFIK_DOMAIN" | sed -E 's/[][\.^$|?*+(){}\\]/\\&/g')"
+
 ##configure environment node variant
 export WARDEN_SVC_NODE_VARIANT=""
 if [[ ${NODE_VERSION} != "" ]]; then

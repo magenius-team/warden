@@ -43,7 +43,6 @@ services:
     labels:
       - traefik.enable=true
       - traefik.http.routers.buggregator.tls=true
-      - traefik.http.routers.buggregator.ruleSyntax=v2
       - traefik.http.routers.buggregator.rule=Host(`buggregator.${WARDEN_SERVICE_DOMAIN:-warden.test}`)
       - traefik.http.services.buggregator.loadbalancer.server.port=8000
     restart: ${WARDEN_RESTART_POLICY:-always}
