@@ -24,3 +24,7 @@ log:
 global:
   checkNewVersion: false
   sendAnonymousUsage: false
+experimental:
+  localPlugins:
+    csp-merge:
+      moduleName: github.com/magenius-team/traefik-csp-merge

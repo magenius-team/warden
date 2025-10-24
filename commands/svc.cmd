@@ -106,6 +106,24 @@ if [[ "${WARDEN_PARAMS[0]}" == "up" ]]; then
 		EOF
     done
 
+    cat > "${WARDEN_HOME_DIR}/etc/traefik/providers/csp-merge.yml" <<-EOT
+		http:
+		  middlewares:
+		    csp-merge:
+		      plugin:
+		        csp-merge:
+		          domains:
+		            - "*.test"
+		          directives:
+		            - default-src
+		            - script-src
+		            - style-src
+		            - img-src
+		            - font-src
+		            - connect-src
+		            - media-src
+	EOT
+
     ## always execute svc up using --detach mode
     if ! (containsElement "-d" "$@" || containsElement "--detach" "$@"); then
         WARDEN_PARAMS=("${WARDEN_PARAMS[@]:1}")
