@@ -25,9 +25,13 @@ if [[ -f "${WARDEN_HOME_DIR}/.env" ]]; then
     eval "$(grep "^WARDEN_PORTAINER_ENABLE" "${WARDEN_HOME_DIR}/.env")"
     # Check Mail service
     eval "$(grep "^WARDEN_MAIL_SERVICE" "${WARDEN_HOME_DIR}/.env")"
+        # Check Docker socket
+    eval "$(grep "^WARDEN_DOCKER_SOCK" "${WARDEN_HOME_DIR}/.env")"
     # Check PMA
     eval "$(grep "^WARDEN_PHPMYADMIN_ENABLE" "${WARDEN_HOME_DIR}/.env")"
 fi
+
+export WARDEN_DOCKER_SOCK="${WARDEN_DOCKER_SOCK:-/var/run/docker.sock}"
 
 ## buggregator smtp service is enabled by default
 WARDEN_MAIL_SERVICE="${WARDEN_MAIL_SERVICE:-buggregator}"
@@ -49,7 +53,6 @@ if [[ "${WARDEN_PORTAINER_ENABLE}" == 1 ]]; then
     DOCKER_COMPOSE_ARGS+=("${WARDEN_DIR}/docker/docker-compose.portainer.yml")
 fi
 
-## add phpmyadmin docker-compose
 ## phpmyadmin is disabled by default
 WARDEN_PHPMYADMIN_ENABLE="${WARDEN_PHPMYADMIN_ENABLE:-0}"
 if [[ "${WARDEN_PHPMYADMIN_ENABLE}" == 1 ]]; then
@@ -83,9 +86,14 @@ if [[ "${WARDEN_PARAMS[0]}" == "up" ]]; then
         "$WARDEN_BIN" sign-certificate "${WARDEN_SERVICE_DOMAIN}"
     fi
 
+    if [[ ! -d "${WARDEN_HOME_DIR}/etc/traefik" ]]; then
+        mkdir -p "${WARDEN_HOME_DIR}/etc/traefik"
+    fi
+
     ## copy configuration files into location where they'll be mounted into containers from
-    mkdir -p "${WARDEN_HOME_DIR}/etc/traefik"
-    cp "${WARDEN_DIR}/config/traefik/traefik.yml" "${WARDEN_HOME_DIR}/etc/traefik/traefik.yml"
+    if [[ ! -f "${WARDEN_HOME_DIR}/etc/traefik/traefik.yml" ]]; then
+        cp "${WARDEN_DIR}/config/traefik/traefik.yml" "${WARDEN_HOME_DIR}/etc/traefik/traefik.yml"
+    fi
 
     ## generate dynamic traefik ssl termination configuration
     mkdir -p "${WARDEN_HOME_DIR}/etc/traefik/providers"

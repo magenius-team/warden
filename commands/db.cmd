@@ -70,6 +70,19 @@ case "${WARDEN_PARAMS[0]}" in
         "$WARDEN_BIN" env exec -T db \
             ${COMMAND} -u"${DB_USER}" -p"${DB_PASSWORD}" "${DB_DATABASE}" "${WARDEN_PARAMS[@]:1}" "$@"
         ;;
+    upgrade)
+            if [ "$MYSQL_DISTRIBUTION" == "mysql" ]; then
+                upgradeCmd="mysql_upgrade"
+            elif [ "$MYSQL_DISTRIBUTION" == "mariadb" ]; then
+                upgradeCmd="mariadb-upgrade"
+            else
+                fatal "The upgrade command only supports MySQL and MariaDB installations."
+                exit 1
+            fi
+
+            "$WARDEN_BIN" env exec -T db \
+            ${upgradeCmd} -p"${MYSQL_ROOT_PASSWORD}"
+        ;;
     *)
         fatal "The command \"${WARDEN_PARAMS[0]}\" does not exist. Please use --help for usage."
         ;;

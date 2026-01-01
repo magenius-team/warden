@@ -7,6 +7,7 @@ if [[ -f "${WARDEN_HOME_DIR}/.env" ]]; then
   eval "$(sed 's/\r$//g' < "${WARDEN_HOME_DIR}/.env" | grep "^DOCKER_")"
 fi
 export WARDEN_IMAGE_REPOSITORY="${WARDEN_IMAGE_REPOSITORY:-"ghcr.io/magenius-team"}"
+export WARDEN_DOCKER_USERNS_MODE="${WARDEN_DOCKER_USERNS_MODE:-host}"
 
 ## define docker platform
 DOCKER_PLATFORM="${DOCKER_PLATFORM:-"linux/amd64"}"
@@ -105,7 +106,7 @@ fi
 [[ ${WARDEN_ELASTICSEARCH} -eq 1 ]] \
     && appendEnvPartialIfExists "elasticsearch"
 
-[[ ${WARDEN_ELASTICHQ} -eq 1 ]] \
+[[ ${WARDEN_ELASTICHQ:=1} -eq 1 ]] \
     && appendEnvPartialIfExists "elastichq"
 
 [[ ${WARDEN_OPENSEARCH} -eq 1 ]] \
