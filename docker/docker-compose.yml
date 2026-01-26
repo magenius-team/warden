@@ -11,10 +11,21 @@ services:
       - ${WARDEN_HOME_DIR}/ssl/certs:/etc/ssl/certs/warden
       - ${WARDEN_DOCKER_SOCK:-/var/run/docker.sock}:/var/run/docker.sock
     labels:
+      # Redirect HTTP to HTTPS
+      - traefik.http.middlewares.traefik-redirect-https.redirectscheme.scheme=https
+      - traefik.http.middlewares.traefik-redirect-https.redirectscheme.permanent=true
+      # Main router for traefik dashboard
       - traefik.enable=true
       - traefik.http.routers.traefik.tls=true
       - traefik.http.routers.traefik.rule=Host(`traefik.${WARDEN_SERVICE_DOMAIN:-warden.test}`)
+      - traefik.http.routers.traefik.entrypoints=https
       - traefik.http.routers.traefik.service=api@internal
+      - traefik.http.routers.traefik.middlewares=traefik-redirect-https
+      # HTTP router (redirect to HTTPS)
+      - traefik.http.routers.traefik-http.rule=Host(`traefik.${WARDEN_SERVICE_DOMAIN:-warden.test}`)
+      - traefik.http.routers.traefik-http.entrypoints=http
+      - traefik.http.routers.traefik-http.middlewares=traefik-redirect-https
+      - traefik.http.routers.traefik-http.service=noop@internal
     restart: ${WARDEN_RESTART_POLICY:-always}
 
   tunnel:
@@ -44,7 +55,13 @@ services:
       - traefik.enable=true
       - traefik.http.routers.buggregator.tls=true
       - traefik.http.routers.buggregator.rule=Host(`buggregator.${WARDEN_SERVICE_DOMAIN:-warden.test}`)
+      - traefik.http.routers.buggregator.entrypoints=https
       - traefik.http.services.buggregator.loadbalancer.server.port=8000
+      # HTTP router (redirect to HTTPS)
+      - traefik.http.routers.buggregator-http.rule=Host(`buggregator.${WARDEN_SERVICE_DOMAIN:-warden.test}`)
+      - traefik.http.routers.buggregator-http.entrypoints=http
+      - traefik.http.routers.buggregator-http.middlewares=traefik-redirect-https
+      - traefik.http.routers.buggregator-http.service=noop@internal
     restart: ${WARDEN_RESTART_POLICY:-always}
 
 volumes:

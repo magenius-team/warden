@@ -8,4 +8,10 @@ services:
       - traefik.docker.network=${WARDEN_ENV_NAME}_default
       - traefik.http.routers.${WARDEN_ENV_NAME}-vite.tls=true
       - traefik.http.routers.${WARDEN_ENV_NAME}-vite.rule=Host(`vite.${WARDEN_ENV_NAME}.test`)
+      - traefik.http.routers.${WARDEN_ENV_NAME}-vite.entrypoints=https
       - traefik.http.services.${WARDEN_ENV_NAME}-vite.loadbalancer.server.port=5173
+      # HTTP router (redirect to HTTPS)
+      - traefik.http.routers.${WARDEN_ENV_NAME}-vite-http.rule=Host(`vite.${WARDEN_ENV_NAME}.test`)
+      - traefik.http.routers.${WARDEN_ENV_NAME}-vite-http.entrypoints=http
+      - traefik.http.routers.${WARDEN_ENV_NAME}-vite-http.middlewares=traefik-redirect-https
+      - traefik.http.routers.${WARDEN_ENV_NAME}-vite-http.service=noop@internal

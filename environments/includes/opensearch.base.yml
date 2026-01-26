@@ -6,8 +6,14 @@ services:
       - traefik.enable=true
       - traefik.http.routers.${WARDEN_ENV_NAME}-opensearch.tls=true
       - traefik.http.routers.${WARDEN_ENV_NAME}-opensearch.rule=Host(`opensearch.${TRAEFIK_DOMAIN}`)
+      - traefik.http.routers.${WARDEN_ENV_NAME}-opensearch.entrypoints=https
       - traefik.http.services.${WARDEN_ENV_NAME}-opensearch.loadbalancer.server.port=9200
       - traefik.docker.network=${WARDEN_ENV_NAME}_default
+      # HTTP router (redirect to HTTPS)
+      - traefik.http.routers.${WARDEN_ENV_NAME}-opensearch-http.rule=Host(`opensearch.${TRAEFIK_DOMAIN}`)
+      - traefik.http.routers.${WARDEN_ENV_NAME}-opensearch-http.entrypoints=http
+      - traefik.http.routers.${WARDEN_ENV_NAME}-opensearch-http.middlewares=traefik-redirect-https
+      - traefik.http.routers.${WARDEN_ENV_NAME}-opensearch-http.service=noop@internal
     environment:
       - DISABLE_SECURITY_PLUGIN=true
       - discovery.type=single-node

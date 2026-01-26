@@ -32,5 +32,11 @@ services:
       - traefik.enable=true
       - traefik.http.routers.dnsmasq.tls=true
       - traefik.http.routers.dnsmasq.rule=Host(`dnsmasq.${WARDEN_SERVICE_DOMAIN:-warden.test}`)
+      - traefik.http.routers.dnsmasq.entrypoints=https
       - traefik.http.services.dnsmasq.loadbalancer.server.port=8080
+      # HTTP router (redirect to HTTPS)
+      - traefik.http.routers.dnsmasq-http.rule=Host(`dnsmasq.${WARDEN_SERVICE_DOMAIN:-warden.test}`)
+      - traefik.http.routers.dnsmasq-http.entrypoints=http
+      - traefik.http.routers.dnsmasq-http.middlewares=traefik-redirect-https
+      - traefik.http.routers.dnsmasq-http.service=noop@internal
     restart: ${WARDEN_RESTART_POLICY:-always}

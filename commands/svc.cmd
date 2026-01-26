@@ -91,9 +91,7 @@ if [[ "${WARDEN_PARAMS[0]}" == "up" ]]; then
     fi
 
     ## copy configuration files into location where they'll be mounted into containers from
-    if [[ ! -f "${WARDEN_HOME_DIR}/etc/traefik/traefik.yml" ]]; then
-        cp "${WARDEN_DIR}/config/traefik/traefik.yml" "${WARDEN_HOME_DIR}/etc/traefik/traefik.yml"
-    fi
+    cp "${WARDEN_DIR}/config/traefik/traefik.yml" "${WARDEN_HOME_DIR}/etc/traefik/traefik.yml"
 
     ## generate dynamic traefik ssl termination configuration
     mkdir -p "${WARDEN_HOME_DIR}/etc/traefik/providers"

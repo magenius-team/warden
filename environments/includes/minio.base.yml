@@ -19,14 +19,28 @@ services:
       retries: 10
     labels:
       - traefik.enable=true
+      # MinIO Console router
       - traefik.http.routers.${WARDEN_ENV_NAME}-minio.tls=true
       - traefik.http.routers.${WARDEN_ENV_NAME}-minio.rule=Host(`minio.${TRAEFIK_DOMAIN}`)
+      - traefik.http.routers.${WARDEN_ENV_NAME}-minio.entrypoints=https
       - traefik.http.routers.${WARDEN_ENV_NAME}-minio.service=${WARDEN_ENV_NAME}-minio
       - traefik.http.services.${WARDEN_ENV_NAME}-minio.loadbalancer.server.port=9001
+      # HTTP MinIO router (redirect to HTTPS)
+      - traefik.http.routers.${WARDEN_ENV_NAME}-minio-http.rule=Host(`minio.${TRAEFIK_DOMAIN}`)
+      - traefik.http.routers.${WARDEN_ENV_NAME}-minio-http.entrypoints=http
+      - traefik.http.routers.${WARDEN_ENV_NAME}-minio-http.middlewares=traefik-redirect-https
+      - traefik.http.routers.${WARDEN_ENV_NAME}-minio-http.service=noop@internal
+      # S3 API router
       - traefik.http.routers.${WARDEN_ENV_NAME}-s3.tls=true
       - traefik.http.routers.${WARDEN_ENV_NAME}-s3.rule=Host(`s3.${TRAEFIK_DOMAIN}`)
+      - traefik.http.routers.${WARDEN_ENV_NAME}-s3.entrypoints=https
       - traefik.http.routers.${WARDEN_ENV_NAME}-s3.service=${WARDEN_ENV_NAME}-s3
       - traefik.http.services.${WARDEN_ENV_NAME}-s3.loadbalancer.server.port=9000
+      # HTTP S3 router (redirect to HTTPS)
+      - traefik.http.routers.${WARDEN_ENV_NAME}-s3-http.rule=Host(`s3.${TRAEFIK_DOMAIN}`)
+      - traefik.http.routers.${WARDEN_ENV_NAME}-s3-http.entrypoints=http
+      - traefik.http.routers.${WARDEN_ENV_NAME}-s3-http.middlewares=traefik-redirect-https
+      - traefik.http.routers.${WARDEN_ENV_NAME}-s3-http.service=noop@internal
       - traefik.docker.network=${WARDEN_ENV_NAME}_default
 
   minio-mc-init:

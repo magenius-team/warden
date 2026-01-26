@@ -11,6 +11,12 @@ services:
     labels:
       - traefik.enable=true
       - traefik.http.routers.phpmyadmin.tls=true
-      - traefik.http.routers.phpmyadmin.rule=Host(`phpmyadmin.${WARDEN_SERVICE_DOMAIN:-warden.test}`)||Host(`phpmyadmin.warden.test`)
+      - traefik.http.routers.phpmyadmin.rule=Host(`phpmyadmin.${WARDEN_SERVICE_DOMAIN:-warden.test}`)
+      - traefik.http.routers.phpmyadmin.entrypoints=https
       - traefik.http.services.phpmyadmin.loadbalancer.server.port=80
+      # HTTP router (redirect to HTTPS)
+      - traefik.http.routers.phpmyadmin-http.rule=Host(`phpmyadmin.${WARDEN_SERVICE_DOMAIN:-warden.test}`)
+      - traefik.http.routers.phpmyadmin-http.entrypoints=http
+      - traefik.http.routers.phpmyadmin-http.middlewares=traefik-redirect-https
+      - traefik.http.routers.phpmyadmin-http.service=noop@internal
     restart: ${WARDEN_RESTART_POLICY:-always}

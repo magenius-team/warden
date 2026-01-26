@@ -6,8 +6,14 @@ services:
       - traefik.enable=true
       - traefik.http.routers.${WARDEN_ENV_NAME}-elasticsearch.tls=true
       - traefik.http.routers.${WARDEN_ENV_NAME}-elasticsearch.rule=Host(`elasticsearch.${TRAEFIK_DOMAIN}`)
+      - traefik.http.routers.${WARDEN_ENV_NAME}-elasticsearch.entrypoints=https
       - traefik.http.services.${WARDEN_ENV_NAME}-elasticsearch.loadbalancer.server.port=9200
       - traefik.docker.network=${WARDEN_ENV_NAME}_default
+      # HTTP router (redirect to HTTPS)
+      - traefik.http.routers.${WARDEN_ENV_NAME}-elasticsearch-http.rule=Host(`elasticsearch.${TRAEFIK_DOMAIN}`)
+      - traefik.http.routers.${WARDEN_ENV_NAME}-elasticsearch-http.entrypoints=http
+      - traefik.http.routers.${WARDEN_ENV_NAME}-elasticsearch-http.middlewares=traefik-redirect-https
+      - traefik.http.routers.${WARDEN_ENV_NAME}-elasticsearch-http.service=noop@internal
     environment:
       - discovery.type=single-node
       - xpack.security.enabled=false

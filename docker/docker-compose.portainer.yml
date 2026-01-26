@@ -9,5 +9,11 @@ services:
       - traefik.enable=true
       - traefik.http.routers.portainer.tls=true
       - traefik.http.routers.portainer.rule=Host(`portainer.${WARDEN_SERVICE_DOMAIN:-warden.test}`)
+      - traefik.http.routers.portainer.entrypoints=https
       - traefik.http.services.portainer.loadbalancer.server.port=9000
+      # HTTP router (redirect to HTTPS)
+      - traefik.http.routers.portainer-http.rule=Host(`portainer.${WARDEN_SERVICE_DOMAIN:-warden.test}`)
+      - traefik.http.routers.portainer-http.entrypoints=http
+      - traefik.http.routers.portainer-http.middlewares=traefik-redirect-https
+      - traefik.http.routers.portainer-http.service=noop@internal
     restart: ${WARDEN_RESTART_POLICY:-always}
