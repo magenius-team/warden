@@ -9,7 +9,7 @@ services:
       - traefik.http.routers.mailhog.entrypoints=https
       - traefik.http.services.mailhog.loadbalancer.server.port=8025
       # HTTP router (redirect to HTTPS)
-      - traefik.http.routers.mailhog-http.rule=Host(`dnsmasq.${WARDEN_SERVICE_DOMAIN:-warden.test}`)
+      - traefik.http.routers.mailhog-http.rule=Host(`mailhog.${WARDEN_SERVICE_DOMAIN:-warden.test}`)
       - traefik.http.routers.mailhog-http.entrypoints=http
       - traefik.http.routers.mailhog-http.middlewares=traefik-redirect-https
       - traefik.http.routers.mailhog-http.service=noop@internal

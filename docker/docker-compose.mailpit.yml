@@ -20,11 +20,11 @@ services:
       - traefik.http.routers.mailpit-http.middlewares=traefik-redirect-https
       - traefik.http.routers.mailpit-http.service=noop@internal
       # Legacy Mailhog redirect
-      - traefik.http.routers.legacy-mailhog.tls=true
       - traefik.http.routers.legacy-mailhog.priority=1
       - traefik.http.routers.legacy-mailhog.rule=Host(`mailhog.${WARDEN_SERVICE_DOMAIN:-warden.test}`)
+      - traefik.http.routers.legacy-mailhog.entrypoints=http,https
       - traefik.http.routers.legacy-mailhog.middlewares=legacy-mailhog-redirect
-      - traefik.http.middlewares.legacy-mailhog-redirect.redirectregex.regex="^(http|https)?://mailhog\\.([^/]+)/.*"
+      - traefik.http.middlewares.legacy-mailhog-redirect.redirectregex.regex="^https?://mailhog\\.([^/]+)/.*"
       - traefik.http.middlewares.legacy-mailhog-redirect.redirectregex.replacement=https://webmail.$${1}/
       - traefik.http.middlewares.legacy-mailhog-redirect.redirectregex.permanent=true
 
