@@ -15,6 +15,8 @@ services:
       - traefik.http.routers.${WARDEN_ENV_NAME}-opensearch-http.middlewares=traefik-redirect-https
       - traefik.http.routers.${WARDEN_ENV_NAME}-opensearch-http.service=noop@internal
     environment:
+      - http.cors.enabled=true
+      - http.cors.allow-origin=/.*/
       - DISABLE_SECURITY_PLUGIN=true
       - discovery.type=single-node
       - "OPENSEARCH_JAVA_OPTS=-Xms64m -Xmx512m"

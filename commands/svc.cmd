@@ -19,16 +19,7 @@ DOCKER_COMPOSE_ARGS+=("-f")
 DOCKER_COMPOSE_ARGS+=("${WARDEN_DIR}/docker/docker-compose.yml")
 
 if [[ -f "${WARDEN_HOME_DIR}/.env" ]]; then
-    # Check DNSMasq
-    eval "$(grep "^WARDEN_DNSMASQ_ENABLE" "${WARDEN_HOME_DIR}/.env")"
-    # Check Portainer
-    eval "$(grep "^WARDEN_PORTAINER_ENABLE" "${WARDEN_HOME_DIR}/.env")"
-    # Check Mail service
-    eval "$(grep "^WARDEN_MAIL_SERVICE" "${WARDEN_HOME_DIR}/.env")"
-        # Check Docker socket
-    eval "$(grep "^WARDEN_DOCKER_SOCK" "${WARDEN_HOME_DIR}/.env")"
-    # Check PMA
-    eval "$(grep "^WARDEN_PHPMYADMIN_ENABLE" "${WARDEN_HOME_DIR}/.env")"
+    eval "$(sed 's/\r$//g' < "${WARDEN_HOME_DIR}/.env" | grep "^WARDEN_")"
 fi
 
 export WARDEN_DOCKER_SOCK="${WARDEN_DOCKER_SOCK:-/var/run/docker.sock}"
@@ -65,6 +56,13 @@ if [[ "${WARDEN_PHPMYADMIN_ENABLE}" == 1 ]]; then
     fi
     DOCKER_COMPOSE_ARGS+=("-f")
     DOCKER_COMPOSE_ARGS+=("${WARDEN_DIR}/docker/docker-compose.phpmyadmin.yml")
+fi
+
+# elasticvue is disabled by default
+WARDEN_ELASTICVUE_ENABLE=${WARDEN_ELASTICVUE_ENABLE:-0}
+if [[ ${WARDEN_ELASTICVUE_ENABLE} -eq 1 ]]; then
+    DOCKER_COMPOSE_ARGS+=("-f")
+    DOCKER_COMPOSE_ARGS+=("${WARDEN_DIR}/docker/docker-compose.elasticvue.yml")
 fi
 
 ## allow an additional docker-compose file to be loaded for global services

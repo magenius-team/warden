@@ -1,0 +1,20 @@
+services:
+  elasticvue:
+    container_name: elasticvue
+    image: ${WARDEN_IMAGE_REPOSITORY}/elasticvue:latest
+    volumes:
+      - elasticvue:/usr/share/nginx/html/api
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.elasticvue.tls=true
+      - traefik.http.routers.elasticvue.rule=Host(`elasticvue.${WARDEN_SERVICE_DOMAIN:-warden.test}`)
+      - traefik.http.routers.elasticvue.entrypoints=https
+      - traefik.http.services.elasticvue.loadbalancer.server.port=8080
+      # HTTP router (redirect to HTTPS)
+      - traefik.http.routers.elasticvue-http.rule=Host(`elasticvue.${WARDEN_SERVICE_DOMAIN:-warden.test}`)
+      - traefik.http.routers.elasticvue-http.entrypoints=http
+      - traefik.http.routers.elasticvue-http.middlewares=traefik-redirect-https
+      - traefik.http.routers.elasticvue-http.service=noop@internal
+    restart: ${WARDEN_RESTART_POLICY:-always}
+volumes:
+  elasticvue:
