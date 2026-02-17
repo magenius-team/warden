@@ -50,7 +50,7 @@ services:
 
   buggregator:
     container_name: buggregator
-    image: ghcr.io/buggregator/server:latest
+    image: ghcr.io/magenius-team/buggregator:latest
     labels:
       - traefik.enable=true
       - traefik.http.routers.buggregator.tls=true
