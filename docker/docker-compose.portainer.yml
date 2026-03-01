@@ -1,7 +1,7 @@
 services:
   portainer:
     container_name: portainer
-    image: portainer/portainer-ce
+    image: ${WARDEN_IMAGE_REPOSITORY}/portainer-ce:alpine
     volumes:
       - ${WARDEN_DOCKER_SOCK}:/var/run/docker.sock
       - portainer:/data

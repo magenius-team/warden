@@ -30,7 +30,7 @@ services:
 
   tunnel:
     container_name: tunnel
-    image: panubo/sshd:latest
+    image: ${WARDEN_IMAGE_REPOSITORY}/sshd:latest
     ports:
       - "127.0.0.1:2222:22"
     volumes:
@@ -50,7 +50,7 @@ services:
 
   buggregator:
     container_name: buggregator
-    image: ghcr.io/magenius-team/buggregator:latest
+    image: ${WARDEN_IMAGE_REPOSITORY}/buggregator:latest
     labels:
       - traefik.enable=true
       - traefik.http.routers.buggregator.tls=true
