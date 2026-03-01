@@ -99,7 +99,7 @@ if [[ ! -f "${WARDEN_HOME_DIR}/.env" ]]; then
 		# Buggregator smtp used by default
 		WARDEN_MAIL_SERVICE=buggregator
 		# Set to "1" to enable Mutagen
-        WARDEN_MUTAGEN_ENABLE=1
+        # WARDEN_MUTAGEN_ENABLE=1
 		# Set to "0" to disable phpMyAdmin
 		WARDEN_PHPMYADMIN_ENABLE=0
 
