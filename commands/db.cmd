@@ -50,7 +50,8 @@ case "${WARDEN_PARAMS[0]}" in
             COMMAND=mariadb
         fi
         "$WARDEN_BIN" env exec db \
-            ${COMMAND} -u"${DB_USER}" -p"${DB_PASSWORD}" --database="${DB_DATABASE}" "${WARDEN_PARAMS[@]:1}" "$@"
+            env MYSQL_PWD="${DB_PASSWORD}" \
+            ${COMMAND} -u"${DB_USER}" --database="${DB_DATABASE}" "${WARDEN_PARAMS[@]:1}" "$@"
         ;;
     import)
         COMMAND=mysql
@@ -60,7 +61,8 @@ case "${WARDEN_PARAMS[0]}" in
         LC_ALL=C sed -E 's/DEFINER[ ]*=[ ]*`[^`]+`@`[^`]+`/DEFINER=CURRENT_USER/g' \
             | LC_ALL=C sed -E '/\@\@(GLOBAL\.GTID_PURGED|SESSION\.SQL_LOG_BIN)/d' \
             | "$WARDEN_BIN" env exec -T db \
-            ${COMMAND} -u"${DB_USER}" -p"${DB_PASSWORD}" --database="${DB_DATABASE}" "${WARDEN_PARAMS[@]:1}" "$@"
+            env MYSQL_PWD="${DB_PASSWORD}" \
+            ${COMMAND} -u"${DB_USER}" --database="${DB_DATABASE}" "${WARDEN_PARAMS[@]:1}" "$@"
         ;;
     dump)
         COMMAND=mysqldump
@@ -68,7 +70,8 @@ case "${WARDEN_PARAMS[0]}" in
             COMMAND=mariadb-dump
         fi
         "$WARDEN_BIN" env exec -T db \
-            ${COMMAND} -u"${DB_USER}" -p"${DB_PASSWORD}" "${DB_DATABASE}" "${WARDEN_PARAMS[@]:1}" "$@"
+            env MYSQL_PWD="${DB_PASSWORD}" \
+            ${COMMAND} -u"${DB_USER}" "${DB_DATABASE}" "${WARDEN_PARAMS[@]:1}" "$@"
         ;;
     upgrade)
             if [ "$MYSQL_DISTRIBUTION" == "mysql" ]; then
@@ -81,7 +84,8 @@ case "${WARDEN_PARAMS[0]}" in
             fi
 
             "$WARDEN_BIN" env exec -T db \
-            ${upgradeCmd} -p"${MYSQL_ROOT_PASSWORD}"
+            env MYSQL_PWD="${MYSQL_ROOT_PASSWORD}" \
+            ${upgradeCmd}
         ;;
     *)
         fatal "The command \"${WARDEN_PARAMS[0]}\" does not exist. Please use --help for usage."
