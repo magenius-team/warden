@@ -12,7 +12,7 @@ services:
       - traefik.http.routers.${WARDEN_ENV_NAME}-nginx.middlewares=csp-merge@file
       - traefik.docker.network=${WARDEN_ENV_NAME}_default
       # HTTP router (redirect to HTTPS)
-      - traefik.http.routers.${WARDEN_ENV_NAME}-nginx-http.rule=Host(`^(.+\.)?${TRAEFIK_DOMAIN_RX}$`)
+      - traefik.http.routers.${WARDEN_ENV_NAME}-nginx-http.rule=HostRegexp(`^(.+\.)?${TRAEFIK_DOMAIN_RX}$`)
       - traefik.http.routers.${WARDEN_ENV_NAME}-nginx-http.entrypoints=http
       - traefik.http.routers.${WARDEN_ENV_NAME}-nginx-http.middlewares=traefik-redirect-https
       - traefik.http.routers.${WARDEN_ENV_NAME}-nginx-http.service=noop@internal

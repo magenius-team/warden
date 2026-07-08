@@ -97,28 +97,28 @@ if [[ ${WARDEN_ENV_TYPE} != local ]]; then
     appendEnvPartialIfExists "php-fpm"
 fi
 
-[[ ${WARDEN_NGINX} -eq 1 ]] \
+[[ ${WARDEN_NGINX:=0} -eq 1 ]] \
     && appendEnvPartialIfExists "nginx"
 
-[[ ${WARDEN_DB} -eq 1 ]] \
+[[ ${WARDEN_DB:=0} -eq 1 ]] \
     && appendEnvPartialIfExists "db.${DB_DISTRIBUTION:-mariadb}"
 
-[[ ${WARDEN_ELASTICSEARCH} -eq 1 ]] \
+[[ ${WARDEN_ELASTICSEARCH:=0} -eq 1 ]] \
     && appendEnvPartialIfExists "elasticsearch"
 
-[[ ${WARDEN_ELASTICHQ:=1} -eq 1 ]] \
+[[ ${WARDEN_ELASTICHQ:=0} -eq 1 ]] \
     && appendEnvPartialIfExists "elastichq"
 
-[[ ${WARDEN_OPENSEARCH} -eq 1 ]] \
+[[ ${WARDEN_OPENSEARCH:=0} -eq 1 ]] \
     && appendEnvPartialIfExists "opensearch"
 
-[[ ${WARDEN_VARNISH} -eq 1 ]] \
+[[ ${WARDEN_VARNISH:=0} -eq 1 ]] \
     && appendEnvPartialIfExists "varnish"
 
-[[ ${WARDEN_RABBITMQ} -eq 1 ]] \
+[[ ${WARDEN_RABBITMQ:=0} -eq 1 ]] \
     && appendEnvPartialIfExists "rabbitmq"
 
-[[ ${WARDEN_REDIS} -eq 1 ]] \
+[[ ${WARDEN_REDIS:=0} -eq 1 ]] \
     && appendEnvPartialIfExists "redis"
 
 [[ ${WARDEN_VALKEY:=0} -eq 1 ]] \
@@ -126,45 +126,45 @@ fi
 
 appendEnvPartialIfExists "${WARDEN_ENV_TYPE}"
 
-[[ ${WARDEN_TEST_DB} -eq 1 ]] \
+[[ ${WARDEN_TEST_DB:=0} -eq 1 ]] \
     && appendEnvPartialIfExists "${WARDEN_ENV_TYPE}.tests.${DB_DISTRIBUTION:-mariadb}"
 
-[[ ${WARDEN_SPLIT_SALES} -eq 1 ]] \
+[[ ${WARDEN_SPLIT_SALES:=0} -eq 1 ]] \
     && appendEnvPartialIfExists "${WARDEN_ENV_TYPE}.splitdb.sales.${DB_DISTRIBUTION:-mariadb}"
 
-[[ ${WARDEN_SPLIT_CHECKOUT} -eq 1 ]] \
+[[ ${WARDEN_SPLIT_CHECKOUT:=0} -eq 1 ]] \
     && appendEnvPartialIfExists "${WARDEN_ENV_TYPE}.splitdb.checkout.${DB_DISTRIBUTION:-mariadb}"
 
-if [[ ${WARDEN_BLACKFIRE} -eq 1 ]]; then
+if [[ ${WARDEN_BLACKFIRE:=0} -eq 1 ]]; then
     appendEnvPartialIfExists "blackfire"
     appendEnvPartialIfExists "${WARDEN_ENV_TYPE}.blackfire"
 fi
 
-[[ ${WARDEN_ALLURE} -eq 1 ]] \
+[[ ${WARDEN_ALLURE:=0} -eq 1 ]] \
     && appendEnvPartialIfExists "allure"
 
-[[ ${WARDEN_SELENIUM} -eq 1 ]] \
+[[ ${WARDEN_SELENIUM:=0} -eq 1 ]] \
     && appendEnvPartialIfExists "selenium"
 
-[[ ${WARDEN_MAGEPACK} -eq 1 ]] \
+[[ ${WARDEN_MAGEPACK:=0} -eq 1 ]] \
     && appendEnvPartialIfExists "${WARDEN_ENV_TYPE}.magepack"
 
-[[ ${WARDEN_MAGENTO2_GRAPHQL_SERVER} -eq 1 ]] \
+[[ ${WARDEN_MAGENTO2_GRAPHQL_SERVER:=0} -eq 1 ]] \
     && appendEnvPartialIfExists "${WARDEN_ENV_TYPE}.graphql"
 [[ ${WARDEN_MAGENTO2_GRAPHQL_SERVER_DEBUG} -eq 1 ]] \
     && appendEnvPartialIfExists "${WARDEN_ENV_TYPE}.graphql-debug"
 
-if [[ ${WARDEN_PHP_SPX} -eq 1 ]]; then
+if [[ ${WARDEN_PHP_SPX:=0} -eq 1 ]]; then
     appendEnvPartialIfExists "php-spx"
     appendEnvPartialIfExists "${WARDEN_ENV_TYPE}.php-spx"
 fi
 
-if [[ ${WARDEN_PHP_XHPROF} -eq 1 ]]; then
+if [[ ${WARDEN_PHP_XHPROF:=0} -eq 1 ]]; then
     appendEnvPartialIfExists "php-xhprof"
     appendEnvPartialIfExists "${WARDEN_ENV_TYPE}.php-xhprof"
 fi
 
-if [[ ${WARDEN_S3} -eq 1 ]]; then
+if [[ ${WARDEN_S3:=0} -eq 1 ]]; then
     appendEnvPartialIfExists "minio"
     appendEnvPartialIfExists "${WARDEN_ENV_TYPE}.minio"
 fi
@@ -179,7 +179,7 @@ if [[ -f "${WARDEN_ENV_PATH}/.warden/warden-env.${WARDEN_ENV_SUBT}.yml" ]]; then
     DOCKER_COMPOSE_ARGS+=("${WARDEN_ENV_PATH}/.warden/warden-env.${WARDEN_ENV_SUBT}.yml")
 fi
 
-if [[ ${WARDEN_SELENIUM_DEBUG} -eq 1 ]]; then
+if [[ ${WARDEN_SELENIUM_DEBUG:=0} -eq 1 ]]; then
     export WARDEN_SELENIUM_DEBUG="-debug"
 else
     export WARDEN_SELENIUM_DEBUG=
