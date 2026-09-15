@@ -44,7 +44,7 @@ services:
       - traefik.docker.network=${WARDEN_ENV_NAME}_default
 
   minio-mc-init:
-    image: minio/mc:latest
+    image: quay.io/minio/aistor/mc:latest
     depends_on:
       minio:
         condition: service_healthy
