@@ -1,11 +1,9 @@
 #!/usr/bin/env bash
 [[ ! ${WARDEN_DIR} ]] && >&2 echo -e "\033[31mThis script is not intended to be run directly!\033[0m" && exit 1
 
-## define source repository
-if [[ -f "${WARDEN_HOME_DIR}/.env" ]]; then
-  eval "$(sed 's/\r$//g' < "${WARDEN_HOME_DIR}/.env" | grep "^WARDEN_")"
-  eval "$(sed 's/\r$//g' < "${WARDEN_HOME_DIR}/.env" | grep "^DOCKER_")"
-fi
+## load global configuration
+loadEnvFile "${WARDEN_HOME_DIR}/.env" "WARDEN_"
+loadEnvFile "${WARDEN_HOME_DIR}/.env" "DOCKER_"
 export WARDEN_IMAGE_REPOSITORY="${WARDEN_IMAGE_REPOSITORY:-"ghcr.io/magenius-team"}"
 export WARDEN_DOCKER_USERNS_MODE="${WARDEN_DOCKER_USERNS_MODE:-host}"
 

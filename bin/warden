@@ -12,14 +12,20 @@ readonly WARDEN_DIR="$(
   )/.." >/dev/null \
   && pwd
 )"
+export WARDEN_DIR
 
-export readonly WARDEN_BIN="${WARDEN_DIR}/bin/warden"
-export readonly DOCKER_COMPOSE_COMMAND="${DOCKER_COMPOSE_COMMAND:-"docker compose"}"
+readonly WARDEN_BIN="${WARDEN_DIR}/bin/warden"
+export WARDEN_BIN
+readonly DOCKER_COMPOSE_COMMAND="${DOCKER_COMPOSE_COMMAND:-"docker compose"}"
+export DOCKER_COMPOSE_COMMAND
 
 ## define and export global shared directory paths
-export readonly WARDEN_HOME_DIR="${WARDEN_HOME_DIR:-"$HOME/.warden"}"
-export readonly WARDEN_SSL_DIR="${WARDEN_HOME_DIR}/ssl"
-export readonly WARDEN_COMPOSER_DIR="${WARDEN_COMPOSER_DIR:-"$HOME/.composer"}"
+readonly WARDEN_HOME_DIR="${WARDEN_HOME_DIR:-"$HOME/.warden"}"
+export WARDEN_HOME_DIR
+readonly WARDEN_SSL_DIR="${WARDEN_HOME_DIR}/ssl"
+export WARDEN_SSL_DIR
+readonly WARDEN_COMPOSER_DIR="${WARDEN_COMPOSER_DIR:-"$HOME/.composer"}"
+export WARDEN_COMPOSER_DIR
 
 source "${WARDEN_DIR}/utils/core.sh"
 source "${WARDEN_DIR}/utils/svc.sh"

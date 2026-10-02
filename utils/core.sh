@@ -1,10 +1,52 @@
 #!/usr/bin/env bash
 [[ ! ${WARDEN_DIR} ]] && >&2 echo -e "\033[31mThis script is not intended to be run directly!\033[0m" && exit 1
 
+## Safely load whitelisted KEY=VALUE pairs from a dotenv-style file without
+## evaluating shell metacharacters in user-controlled environment files.
+function loadEnvFile () {
+  local envFile="${1}"
+  local prefixRegex="${2}"
+  [[ ! -f "${envFile}" ]] && return 0
+
+  local line key value declaration
+  local doubleQuoted='^"([^"]*)"[[:space:]]*(#.*)?$'
+  local singleQuoted="^'([^']*)'[[:space:]]*(#.*)?$"
+  while IFS= read -r line || [[ -n "${line}" ]]; do
+    line="${line%$'\r'}"
+    [[ -z "${line}" ]] && continue
+    [[ "${line}" =~ ^[[:space:]]*# ]] && continue
+    [[ "${line}" != *=* ]] && continue
+
+    key="${line%%=*}"
+    value="${line#*=}"
+
+    [[ ! "${key}" =~ ^[A-Za-z_][A-Za-z0-9_]*$ ]] && continue
+    [[ ! "${key}" =~ ^${prefixRegex} ]] && continue
+
+    if declaration="$(declare -p "${key}" 2>/dev/null)"; then
+      ## Only plain scalars (optionally exported) can receive literal data.
+      ## Integer/array assignment may evaluate arithmetic; namerefs redirect it.
+      [[ ! "${declaration}" =~ ^declare\ (-x|--)\  ]] && continue
+    fi
+
+    if [[ "${value}" =~ ${doubleQuoted} ]] || [[ "${value}" =~ ${singleQuoted} ]]; then
+      value="${BASH_REMATCH[1]}"
+    elif [[ "${value}" == \"* || "${value}" == \'* ]]; then
+      ## Reject malformed quoted values instead of treating quoted # as comments.
+      continue
+    else
+      value="${value%%[[:space:]]#*}"
+    fi
+
+    printf -v "${key}" '%s' "${value}"
+    export "${key?}"
+  done < "${envFile}"
+}
+
 if [[ -f "${WARDEN_HOME_DIR}/.env" ]]; then
-  eval "$(grep "^WARDEN_PHPMYADMIN_ENABLE" "${WARDEN_HOME_DIR}/.env")"
+  loadEnvFile "${WARDEN_HOME_DIR}/.env" "WARDEN_PHPMYADMIN_ENABLE"
   export WARDEN_PHPMYADMIN_ENABLE="${WARDEN_PHPMYADMIN_ENABLE:-1}"
-  eval "$(grep "^WARDEN_MAIL_SERVICE" "${WARDEN_HOME_DIR}/.env")"
+  loadEnvFile "${WARDEN_HOME_DIR}/.env" "WARDEN_MAIL_SERVICE"
   export WARDEN_MAIL_SERVICE="${WARDEN_MAIL_SERVICE:-buggregator}"
 fi
 
@@ -79,7 +121,7 @@ function disconnectPeeredServices {
 function regeneratePMAConfig() {
   if [[ -f "${WARDEN_HOME_DIR}/.env" ]]; then
     # Recheck PMA since old versions of .env may not have WARDEN_PHPMYADMIN_ENABLE setting
-    eval "$(grep "^WARDEN_PHPMYADMIN_ENABLE" "${WARDEN_HOME_DIR}/.env")"
+    loadEnvFile "${WARDEN_HOME_DIR}/.env" "WARDEN_PHPMYADMIN_ENABLE"
     WARDEN_PHPMYADMIN_ENABLE="${WARDEN_PHPMYADMIN_ENABLE:-1}"
   fi
   if [[ "${WARDEN_PHPMYADMIN_ENABLE}" == 1 ]]; then

@@ -18,9 +18,7 @@ DOCKER_COMPOSE_ARGS=()
 DOCKER_COMPOSE_ARGS+=("-f")
 DOCKER_COMPOSE_ARGS+=("${WARDEN_DIR}/docker/docker-compose.yml")
 
-if [[ -f "${WARDEN_HOME_DIR}/.env" ]]; then
-    eval "$(sed 's/\r$//g' < "${WARDEN_HOME_DIR}/.env" | grep "^WARDEN_")"
-fi
+loadEnvFile "${WARDEN_HOME_DIR}/.env" "WARDEN_"
 
 export WARDEN_DOCKER_SOCK="${WARDEN_DOCKER_SOCK:-/var/run/docker.sock}"
 
@@ -80,10 +78,6 @@ fi
 if [[ "${WARDEN_PARAMS[0]}" == "up" ]]; then
 
     ## sign certificate used by global services (by default warden.test)
-    if [[ -f "${WARDEN_HOME_DIR}/.env" ]]; then
-        eval "$(grep "^WARDEN_SERVICE_DOMAIN" "${WARDEN_HOME_DIR}/.env")"
-    fi
-
     WARDEN_SERVICE_DOMAIN="${WARDEN_SERVICE_DOMAIN:-warden.test}"
     if [[ ! -f "${WARDEN_SSL_DIR}/certs/${WARDEN_SERVICE_DOMAIN}.crt.pem" ]]; then
         "$WARDEN_BIN" sign-certificate "${WARDEN_SERVICE_DOMAIN}"

