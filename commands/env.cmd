@@ -21,6 +21,12 @@ if [[ "${WARDEN_PARAMS[0]}" == "up" ]]; then
     assertSvcRunning
 fi
 
+## keep Traefik's static configuration current on environment lifecycle commands, since
+## these are reached far more often than 'warden svc up' after an upgrade
+if containsElement "${WARDEN_PARAMS[0]}" up start restart; then
+    assertTraefikStaticConfig
+fi
+
 HOST_UID=$(id -u)
 HOST_GID=$(id -g)
 
@@ -273,9 +279,11 @@ fi
 
 if [[ ${WARDEN_MUTAGEN_ENABLE} -eq 1 ]] && [[ -f "${MUTAGEN_SYNC_FILE}" ]] # If we're using Mutagen
 then
-  MUTAGEN_VERSION=$(mutagen version)
+  ## mutagen may not be installed yet; "warden sync start" below installs it on demand
+  MUTAGEN_VERSION=$(mutagen version 2>/dev/null) || true
   CONNECTION_STATE_STRING='Connected state: Connected'
-  if [[ $((10#$(version "${MUTAGEN_VERSION}"))) -ge $((10#$(version '0.15.0'))) ]]; then
+  if [[ -n "${MUTAGEN_VERSION}" ]] \
+      && [[ $((10#$(version "${MUTAGEN_VERSION}"))) -ge $((10#$(version '0.15.0'))) ]]; then
     CONNECTION_STATE_STRING='Connected: Yes'
   fi
 

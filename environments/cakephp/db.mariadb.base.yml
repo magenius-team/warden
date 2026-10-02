@@ -1,0 +1,7 @@
+services:
+  db:
+    environment:
+      - MARIADB_ROOT_PASSWORD=${DB_ROOT_PASSWORD:-cakephp}
+      - MARIADB_DATABASE=${DB_DATABASE:-cakephp}
+      - MARIADB_USER=${DB_USER:-cakephp}
+      - MARIADB_PASSWORD=${DB_PASSWORD:-cakephp}

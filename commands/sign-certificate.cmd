@@ -57,7 +57,7 @@ openssl x509 -req -days 365 -sha256 -extensions v3_req            \
   -in "${WARDEN_SSL_DIR}/certs/${CERTIFICATE_NAME}.csr.pem"       \
   -out "${WARDEN_SSL_DIR}/certs/${CERTIFICATE_NAME}.crt.pem" 
 
-if docker ps -q --filter "label=com.docker.compose.project=warden" --filter "label=com.docker.compose.service=traefik" | grep -q .
+if [[ "$(${WARDEN_BIN} svc ps -q traefik 2>/dev/null)" ]]
 then
   echo "==> Updating traefik"
   "$WARDEN_BIN" svc up traefik

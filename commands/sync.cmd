@@ -21,7 +21,15 @@ fi
 ## attempt to install mutagen if not already present
 if ! which mutagen >/dev/null; then
   echo -e "\033[33mMutagen could not be found; attempting install via brew.\033[0m"
-  brew install havoc-io/mutagen/mutagen
+  brew install mutagen-io/mutagen/mutagen || true
+fi
+
+## instruct the user how to install mutagen when the automated install did not succeed
+if ! which mutagen >/dev/null; then
+  error "Mutagen could not be installed automatically."
+  >&2 printf "\nPlease install Mutagen manually and re-run this command:\n\n  brew trust mutagen-io/mutagen\n  brew install mutagen-io/mutagen/mutagen\n\n"
+  >&2 printf "If brew reports \"Formulae found in multiple taps\", untap the deprecated tap first:\n\n  brew untap havoc-io/mutagen\n\n"
+  exit 1
 fi
 
 ## verify mutagen version constraint
@@ -29,7 +37,7 @@ MUTAGEN_VERSION=$(mutagen version 2>/dev/null) || true
 MUTAGEN_REQUIRE=0.11.8
 if [[ $OSTYPE =~ ^darwin ]] && ! test $(version ${MUTAGEN_VERSION}) -ge $(version ${MUTAGEN_REQUIRE}); then
   error "Mutagen version ${MUTAGEN_REQUIRE} or greater is required (version ${MUTAGEN_VERSION} is installed)."
-  >&2 printf "\nPlease update Mutagen:\n\n  brew upgrade havoc-io/mutagen/mutagen\n\n"
+  >&2 printf "\nPlease update Mutagen:\n\n  brew upgrade mutagen-io/mutagen/mutagen\n\n"
   exit 1
 fi
 

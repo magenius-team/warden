@@ -71,6 +71,11 @@ if [[ -f "${WARDEN_HOME_DIR}/docker-compose.yml" ]]; then
     DOCKER_COMPOSE_ARGS+=("${WARDEN_HOME_DIR}/docker-compose.yml")
 fi
 
+## keep Traefik's static configuration current whenever global services are (re)started
+if containsElement "${WARDEN_PARAMS[0]}" up start restart; then
+    assertTraefikStaticConfig
+fi
+
 ## special handling when 'svc up' is run
 if [[ "${WARDEN_PARAMS[0]}" == "up" ]]; then
 
@@ -87,9 +92,6 @@ if [[ "${WARDEN_PARAMS[0]}" == "up" ]]; then
     if [[ ! -d "${WARDEN_HOME_DIR}/etc/traefik" ]]; then
         mkdir -p "${WARDEN_HOME_DIR}/etc/traefik"
     fi
-
-    ## copy configuration files into location where they'll be mounted into containers from
-    cp "${WARDEN_DIR}/config/traefik/traefik.yml" "${WARDEN_HOME_DIR}/etc/traefik/traefik.yml"
 
     ## generate dynamic traefik ssl termination configuration
     mkdir -p "${WARDEN_HOME_DIR}/etc/traefik/providers"
