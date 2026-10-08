@@ -7,7 +7,11 @@ services:
       - traefik.http.routers.${WARDEN_ENV_NAME}-allure.tls=true
       - traefik.http.routers.${WARDEN_ENV_NAME}-allure.rule=Host(`allure.${TRAEFIK_DOMAIN}`)
       - traefik.http.routers.${WARDEN_ENV_NAME}-allure.entrypoints=https
-      - traefik.http.services.${WARDEN_ENV_NAME}-allure.loadbalancer.server.port=4040
+      - traefik.http.services.${WARDEN_ENV_NAME}-allure.loadbalancer.server.port=5050
+      # Serve the latest report at the root instead of the API documentation.
+      - traefik.http.routers.${WARDEN_ENV_NAME}-allure.middlewares=${WARDEN_ENV_NAME}-allure-report
+      - traefik.http.middlewares.${WARDEN_ENV_NAME}-allure-report.redirectregex.regex=^https?://([^/]+)/?$$
+      - traefik.http.middlewares.${WARDEN_ENV_NAME}-allure-report.redirectregex.replacement=https://$${1}/allure-docker-service/latest-report
       - traefik.docker.network=${WARDEN_ENV_NAME}_default
       # HTTP router (redirect to HTTPS)
       - traefik.http.routers.${WARDEN_ENV_NAME}-allure-http.rule=Host(`allure.${TRAEFIK_DOMAIN}`)

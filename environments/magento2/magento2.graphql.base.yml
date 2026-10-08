@@ -24,12 +24,12 @@ services:
     labels:
       - traefik.enable=true
       - traefik.http.routers.${WARDEN_ENV_NAME}-graphql.tls=true
-      - traefik.http.routers.${WARDEN_ENV_NAME}-graphql.rule=(HostRegexp(`{subdomain:.+}.${TRAEFIK_DOMAIN}`) || Host(`${TRAEFIK_DOMAIN}`)) && Path(`/graphql`)
+      - traefik.http.routers.${WARDEN_ENV_NAME}-graphql.rule=HostRegexp(`^(.+\.)?${TRAEFIK_DOMAIN_RX}$`) && Path(`/graphql`)
       - traefik.http.routers.${WARDEN_ENV_NAME}-graphql.entrypoints=https
       - traefik.http.services.${WARDEN_ENV_NAME}-graphql.loadbalancer.server.port=9501
       - traefik.docker.network=${WARDEN_ENV_NAME}_default
       # HTTP router (redirect to HTTPS)
-      - traefik.http.routers.${WARDEN_ENV_NAME}-graphql-http.rule=(HostRegexp(`{subdomain:.+}.${TRAEFIK_DOMAIN}`) || Host(`${TRAEFIK_DOMAIN}`)) && Path(`/graphql`)
+      - traefik.http.routers.${WARDEN_ENV_NAME}-graphql-http.rule=HostRegexp(`^(.+\.)?${TRAEFIK_DOMAIN_RX}$`) && Path(`/graphql`)
       - traefik.http.routers.${WARDEN_ENV_NAME}-graphql-http.entrypoints=http
       - traefik.http.routers.${WARDEN_ENV_NAME}-graphql-http.middlewares=traefik-redirect-https
       - traefik.http.routers.${WARDEN_ENV_NAME}-graphql-http.service=noop@internal

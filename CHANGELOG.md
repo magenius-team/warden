@@ -4,7 +4,7 @@
 [All Commits](https://github.com/wardenenv/warden/compare/0.16.0..main)
 
 **Big Changes:**
-* Traefik has been updated from v2 to v3.  For compatibility, we have kept the v2 rule engine as the default.  It is possible to opt-in to v3 rule syntax on a per-router basis.
+* Traefik has been updated from v2 to v3 and now uses native v3 rule syntax throughout, including GraphQL routes. Deprecated router `ruleSyntax` overrides and the global v2 compatibility default have been removed. Custom routing rules must use v3 syntax (for example, ``HostRegexp(`^(.+\.)?example\.test$`)`` instead of named captures). Run `warden svc up` to refresh Traefik's static configuration, then `warden env up -d` in each project to recreate containers with updated routing labels; remove `ruleSyntax` labels from custom Compose overrides as well.
 
 **Security Fixes:**
 * Fix arbitrary command execution via project `.env` files. The previous loader used `eval "$(grep ...)"` against any project's `.env`, allowing shell metacharacters (e.g. `$(...)` or backticks) inside `WARDEN_*`, `TRAEFIK_*` or `PHP_*` values to execute on the developer's host whenever `warden env *` was run. Replaced with a strict KEY=VALUE parser that validates identifiers and never evaluates values. (by @lbajsarowicz)

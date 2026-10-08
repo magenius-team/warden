@@ -14,19 +14,16 @@ services:
       # Main router (everything except PURGE)
       - traefik.http.routers.${WARDEN_ENV_NAME}-varnish.tls=true
       - traefik.http.routers.${WARDEN_ENV_NAME}-varnish.priority=1
-      - traefik.http.routers.${WARDEN_ENV_NAME}-varnish.ruleSyntax=v3
       - traefik.http.routers.${WARDEN_ENV_NAME}-varnish.rule=HostRegexp(`^(.+\.)?${TRAEFIK_DOMAIN_RX}$`) && !Method(`PURGE`)
       - traefik.http.routers.${WARDEN_ENV_NAME}-varnish.entrypoints=https
       - traefik.http.routers.${WARDEN_ENV_NAME}-varnish.service=${WARDEN_ENV_NAME}-varnish
       - traefik.http.routers.${WARDEN_ENV_NAME}-varnish.middlewares=csp-merge@file
       # HTTP router (redirect to HTTPS)
-      - traefik.http.routers.${WARDEN_ENV_NAME}-varnish-http.ruleSyntax=v3
       - traefik.http.routers.${WARDEN_ENV_NAME}-varnish-http.rule=HostRegexp(`^(.+\.)?${TRAEFIK_DOMAIN_RX}$`) && !Method(`PURGE`)
       - traefik.http.routers.${WARDEN_ENV_NAME}-varnish-http.entrypoints=http
       - traefik.http.routers.${WARDEN_ENV_NAME}-varnish-http.middlewares=traefik-redirect-https
       - traefik.http.routers.${WARDEN_ENV_NAME}-varnish-http.service=noop@internal
       # Special router ONLY for PURGE
-      - traefik.http.routers.${WARDEN_ENV_NAME}-varnish-purge.ruleSyntax=v3
       - traefik.http.routers.${WARDEN_ENV_NAME}-varnish-purge.entrypoints=http
       - traefik.http.routers.${WARDEN_ENV_NAME}-varnish-purge.rule=HostRegexp(`^(.+\.)?${TRAEFIK_DOMAIN_RX}$`) && Method(`PURGE`)
       - traefik.http.routers.${WARDEN_ENV_NAME}-varnish-purge.service=${WARDEN_ENV_NAME}-varnish
